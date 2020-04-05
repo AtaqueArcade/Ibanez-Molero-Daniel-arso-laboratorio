@@ -8,6 +8,7 @@ import javax.ws.rs.core.*;
 import bookle.controlador.BookleControlador;
 import bookle.controlador.BookleControladorImpl;
 import bookle.controlador.BookleException;
+import bookle.controlador.RecursoNoEncontradoException;
 import bookle.tipos.Actividad;
 
 @Path("actividades")
