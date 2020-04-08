@@ -73,7 +73,6 @@ public class BookleRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-
 	public Response createActividad(
 			@ApiParam(value = "titulo de la actividad", required = true) @FormParam("titulo") String titulo,
 			@ApiParam(value = "descripcion de la actividad", required = false) @FormParam("descripcion") String descripcion,
@@ -90,4 +89,73 @@ public class BookleRest {
 		return Response.created(nuevaURL).build();
 	}
 
+	@POST
+	@Path("/{id}/agenda")
+	@ApiOperation(value = "Crea un dia", notes = "Crea un día en una agenda dentro de la actividad con los parámetros proporcionados")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response addDiaActividad() {
+		return null;
+	}
+
+	@DELETE
+	@Path("{id}/agenda/{fecha}")
+	@ApiOperation(value = "Elimina un dia", notes = "Elimina un día de la agenda de la actividad en base a su fecha")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response removeDiaActividad() {
+		return null;
+	}
+
+	@POST
+	@Path("/{id}/agenda/{fecha}/turno")
+	@ApiOperation(value = "Anade un turno", notes = "Crea un turno y lo anade a el dia indicado de la actividad, retorna su id", response = URI.class)
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response addTurnoActividad() {
+		return null;
+	}
+
+	@DELETE
+	@Path("{id}/agenda/{fecha}/turno/{indice}")
+	@ApiOperation(value = "Elimina un turno", notes = "Elimina un turno de un día de la agenda de la actividad indicada")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response removeTurnoActividad() {
+		return null;
+	}
+
+	@PUT
+	@Path("/{id}/agenda/{fecha}/turno/{indice}")
+	@ApiOperation(value = "Establece el horario de un turno", notes = "Establece el horario del turno indicado de la actividad")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response setHorario() {
+		return null;
+	}
+
+	@POST
+	@Path("/{id}/agenda/{fecha}/turno/{indice}/reserva")
+	@ApiOperation(value = "Crea una reserva", notes = "Determinar la reserva para un turno determinado, retorna su id")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response createReserva() {
+		return null;
+	}
+
+	@DELETE
+	@Path("/{id}/reservas/{ticket}")
+	@ApiOperation(value = "Elimina una reserva", notes = "Eliminar una reserva de una actividad, retorna false en caso de fallo")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response removeReserva() {
+		return null;
+	}
 }
