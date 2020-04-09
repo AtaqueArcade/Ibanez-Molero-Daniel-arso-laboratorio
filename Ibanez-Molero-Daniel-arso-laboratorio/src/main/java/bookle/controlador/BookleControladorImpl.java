@@ -359,7 +359,7 @@ public class BookleControladorImpl implements BookleControlador {
 		if (!getIdentifidores().contains(id))
 			throw new RecursoNoEncontradoException("El id de actividad no existe");
 		if (ticket == null || ticket.equals(""))
-			throw new IllegalArgumentException("El alumno no puede ser nulo o vacio");
+			throw new IllegalArgumentException("El ticket no puede ser nulo o vacio");
 		//
 		Actividad actividad = cargar(id);
 

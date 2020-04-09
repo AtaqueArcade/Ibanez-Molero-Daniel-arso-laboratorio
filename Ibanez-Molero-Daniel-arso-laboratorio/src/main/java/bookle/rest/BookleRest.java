@@ -1,6 +1,10 @@
 package bookle.rest;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -30,9 +34,7 @@ public class BookleRest {
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
 	public Response getActividad(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id)
 			throws BookleException {
-
 		Actividad actividad = controlador.getActividad(id);
-
 		return Response.status(Response.Status.OK).entity(actividad).build();
 	}
 
@@ -69,7 +71,7 @@ public class BookleRest {
 
 	@POST
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Crea una actividad", notes = "Crea una actividad con los parámetros proporcionados, retorna su id", response = String.class)
+	@ApiOperation(value = "Crea una actividad", notes = "Crea una actividad con los parametros proporcionados, retorna su id", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
@@ -79,34 +81,42 @@ public class BookleRest {
 			@ApiParam(value = "profesor de la actividad", required = true) @FormParam("profesor") String profesor,
 			@ApiParam(value = "email de la actividad", required = false) @FormParam("email") String email)
 			throws BookleException {
-
 		String id = controlador.createActividad(titulo, descripcion, profesor, email);
-
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 		builder.path(id);
 		URI nuevaURL = builder.build();
-
 		return Response.created(nuevaURL).build();
 	}
 
 	@POST
 	@Path("/{id}/agenda")
-	@ApiOperation(value = "Crea un dia", notes = "Crea un día en una agenda dentro de la actividad con los parámetros proporcionados")
+	@ApiOperation(value = "Crea un dia", notes = "Crea un dia en una agenda dentro de la actividad con los parámetros proporcionados")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response addDiaActividad() {
-		return null;
+	public Response addDiaActividad(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @FormParam("fecha") String fecha,
+			@ApiParam(value = "turnos del dia", required = true) @PathParam("turno") int turno)
+			throws ParseException, BookleException {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		controlador.addDiaActividad(id, format.parse(fecha), turno);
+		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+		builder.path(fecha);
+		URI nuevaURL = builder.build();
+		return Response.created(nuevaURL).build();
 	}
 
 	@DELETE
 	@Path("{id}/agenda/{fecha}")
-	@ApiOperation(value = "Elimina un dia", notes = "Elimina un día de la agenda de la actividad en base a su fecha")
+	@ApiOperation(value = "Elimina un dia", notes = "Elimina un dia de la agenda de la actividad en base a su fecha")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response removeDiaActividad() {
-		return null;
+	public Response removeDiaActividad(
+			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @PathParam("fecha") Date fecha) throws BookleException {
+		controlador.removeDiaActividad(id, fecha);
+		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	@POST
@@ -115,18 +125,31 @@ public class BookleRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response addTurnoActividad() {
-		return null;
+	public Response addTurnoActividad(
+			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @PathParam("fecha") String fecha)
+			throws ParseException, BookleException {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		int turno = controlador.addTurnoActividad(id, format.parse(fecha));
+		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+		builder.path(Integer.toString(turno));
+		URI nuevaURL = builder.build();
+		return Response.created(nuevaURL).build();
 	}
 
 	@DELETE
 	@Path("{id}/agenda/{fecha}/turno/{indice}")
-	@ApiOperation(value = "Elimina un turno", notes = "Elimina un turno de un día de la agenda de la actividad indicada")
+	@ApiOperation(value = "Elimina un turno", notes = "Elimina un turno de un dia de la agenda de la actividad indicada")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response removeTurnoActividad() {
-		return null;
+	public Response removeTurnoActividad(
+			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @PathParam("fecha") Date fecha,
+			@ApiParam(value = "indice del turno", required = true) @PathParam("indice") int turno)
+			throws BookleException {
+		controlador.removeTurnoActividad(id, fecha, turno);
+		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	@PUT
@@ -135,23 +158,42 @@ public class BookleRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response setHorario() {
-		return null;
+	public Response setHorario(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @PathParam("fecha") String fecha,
+			@ApiParam(value = "indice del turno", required = true) @PathParam("indice") int indice,
+			@ApiParam(value = "horario del turno", required = true) @FormParam("horario") String horario)
+			throws ParseException, BookleException {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		controlador.setHorario(id, format.parse(fecha), indice, horario);
+		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	@POST
 	@Path("/{id}/agenda/{fecha}/turno/{indice}/reserva")
-	@ApiOperation(value = "Crea una reserva", notes = "Determinar la reserva para un turno determinado, retorna su id")
+	@ApiOperation(value = "Crea una reserva", notes = "Crea una reserva para un turno determinado, retorna su id")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response createReserva() {
-		return null;
+	public Response createReserva(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "fecha del dia", required = true) @PathParam("fecha") String fecha,
+			@ApiParam(value = "indice del turno", required = true) @PathParam("indice") int indice,
+			@ApiParam(value = "alumno de la reserva", required = true) @FormParam("alumno") String alumno,
+			@ApiParam(value = "email de la reserva", required = false) @FormParam("email") String email)
+			throws BookleException, ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		String idReserva = controlador.createReserva(id, format.parse(fecha), indice, alumno, email);
+		UriBuilder builder = uriInfo.getBaseUriBuilder();
+		builder.path("actividades");
+		builder.path(id);
+		builder.path("reservas");
+		builder.path(idReserva);
+		URI nuevaURL = builder.build();
+		return Response.created(nuevaURL).build();		
 	}
 
 	@DELETE
 	@Path("/{id}/reservas/{ticket}")
-	@ApiOperation(value = "Elimina una reserva", notes = "Eliminar una reserva de una actividad, retorna false en caso de fallo")
+	@ApiOperation(value = "Elimina una reserva", notes = "Elimina una reserva de una actividad, retorna false en caso de fallo")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
