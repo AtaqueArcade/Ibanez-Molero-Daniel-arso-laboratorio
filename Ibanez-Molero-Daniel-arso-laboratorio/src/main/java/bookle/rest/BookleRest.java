@@ -42,7 +42,7 @@ public class BookleRest {
 	}
 
 	@PUT
-	@Path("{id}")
+	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Actualiza una actividad", notes = "Actualiza una actividad con los parámetros proporcionados")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
@@ -58,8 +58,21 @@ public class BookleRest {
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
+	@PUT
+	@Path("/{id}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Actualiza una actividad", notes = "Actualiza una actividad con los parámetros proporcionados")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
+	public Response updateActividad(@PathParam("id") String id, Actividad actividad) throws BookleException {
+		controlador.updateActividad(id, actividad.getTitulo(), actividad.getDescripcion(), actividad.getProfesor(), actividad.getEmail());
+		return Response.status(Response.Status.NO_CONTENT).build();
+	}
+	
 	@DELETE
-	@Path("{id}")
+	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Elimina una actividad", notes = "Elimina una actividad utilizando su identificador, retorna false en caso de fallo", response = Boolean.class)
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
@@ -110,7 +123,7 @@ public class BookleRest {
 	}
 
 	@DELETE
-	@Path("{id}/agenda/{fecha}")
+	@Path("/{id}/agenda/{fecha}")
 	@ApiOperation(value = "Elimina un dia", notes = "Elimina un dia de la agenda de la actividad en base a su fecha")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
@@ -141,7 +154,7 @@ public class BookleRest {
 	}
 
 	@DELETE
-	@Path("{id}/agenda/{fecha}/turno/{indice}")
+	@Path("/{id}/agenda/{fecha}/turno/{indice}")
 	@ApiOperation(value = "Elimina un turno", notes = "Elimina un turno de un dia de la agenda de la actividad indicada")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
@@ -219,7 +232,7 @@ public class BookleRest {
 		for (String id : actividades) {
 			Actividad actividad = controlador.getActividad(id);
 			if ((actividad.getProfesor().equals(profesor) || profesor == null)
-					&& (actividad.getTitulo().equals(titulo) || titulo == null)) {
+					&& (actividad.getTitulo().contains(titulo) || titulo == null)) {
 				UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 				builder.path(id);
 				String url = builder.build().toString();
