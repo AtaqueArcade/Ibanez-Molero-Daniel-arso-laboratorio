@@ -3,6 +3,7 @@ package bookle.rest;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,8 @@ import javax.ws.rs.core.*;
 import bookle.controlador.BookleControlador;
 import bookle.controlador.BookleControladorImpl;
 import bookle.controlador.BookleException;
+import bookle.controlador.ListadoActividades;
+import bookle.controlador.ProxyActividad;
 import bookle.tipos.Actividad;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -188,7 +191,7 @@ public class BookleRest {
 		builder.path("reservas");
 		builder.path(idReserva);
 		URI nuevaURL = builder.build();
-		return Response.created(nuevaURL).build();		
+		return Response.created(nuevaURL).build();
 	}
 
 	@DELETE
@@ -197,7 +200,28 @@ public class BookleRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response removeReserva() {
-		return null;
+	public Response removeReserva(
+			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "ticket de la reserva", required = true) @PathParam("ticket") String ticket) throws BookleException {
+		controlador.removeReserva(id, ticket);
+		return Response.status(Response.Status.NO_CONTENT).build();
+	}
+
+	@GET
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Retorna un listado de actividades", response = ListadoActividades.class)
+	public Response listado(
+			@ApiParam(value = "profesor de la actividad", required = false) @QueryParam("profesor") String profesor)
+			throws BookleException {
+		Collection<String> actividades = controlador.getIdentifidores();
+		ListadoActividades listado = new ListadoActividades();
+		for (String id : actividades) {
+			// Cálculo de la URL
+			UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+			builder.path(id);
+			String url = builder.build().toString();
+			listado.getActividad().add(new ProxyActividad(url, controlador.getActividad(id).getTitulo()));
+		}
+		return Response.ok(listado).build();
 	}
 }
