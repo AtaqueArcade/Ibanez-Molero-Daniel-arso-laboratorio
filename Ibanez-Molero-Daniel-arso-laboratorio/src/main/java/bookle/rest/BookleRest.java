@@ -200,9 +200,9 @@ public class BookleRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response removeReserva(
-			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
-			@ApiParam(value = "ticket de la reserva", required = true) @PathParam("ticket") String ticket) throws BookleException {
+	public Response removeReserva(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
+			@ApiParam(value = "ticket de la reserva", required = true) @PathParam("ticket") String ticket)
+			throws BookleException {
 		controlador.removeReserva(id, ticket);
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
@@ -211,16 +211,20 @@ public class BookleRest {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Retorna un listado de actividades", response = ListadoActividades.class)
 	public Response listado(
-			@ApiParam(value = "profesor de la actividad", required = false) @QueryParam("profesor") String profesor)
+			@ApiParam(value = "profesor de la actividad", required = false) @QueryParam("profesor") String profesor,
+			@ApiParam(value = "titulo de la actividad", required = false) @QueryParam("titulo") String titulo)
 			throws BookleException {
 		Collection<String> actividades = controlador.getIdentifidores();
 		ListadoActividades listado = new ListadoActividades();
 		for (String id : actividades) {
-			// Cálculo de la URL
-			UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-			builder.path(id);
-			String url = builder.build().toString();
-			listado.getActividad().add(new ProxyActividad(url, controlador.getActividad(id).getTitulo()));
+			Actividad actividad = controlador.getActividad(id);
+			if ((actividad.getProfesor().equals(profesor) || profesor == null)
+					&& (actividad.getTitulo().equals(titulo) || titulo == null)) {
+				UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+				builder.path(id);
+				String url = builder.build().toString();
+				listado.getActividad().add(new ProxyActividad(url, actividad.getTitulo()));
+			}
 		}
 		return Response.ok(listado).build();
 	}
