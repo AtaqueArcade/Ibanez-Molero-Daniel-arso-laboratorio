@@ -193,7 +193,8 @@ public class BookleControladorImpl implements BookleControlador {
 		if (fecha == null)
 			throw new IllegalArgumentException("La fecha no puede ser nula o vacia");
 		if (turnos <= 0)
-			throw new BookleException("El número de turnos debe ser mayor o igual que 1");
+			throw new BookleException("El numero de turnos debe ser mayor o igual que 1");
+
 		Actividad actividad = cargar(id);
 
 		if (getDia(actividad, fecha) != null)

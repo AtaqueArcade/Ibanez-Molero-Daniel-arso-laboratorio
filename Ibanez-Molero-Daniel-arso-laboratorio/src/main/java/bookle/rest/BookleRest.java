@@ -58,23 +58,36 @@ public class BookleRest {
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
-	@PUT
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@ApiOperation(value = "Actualiza una actividad", notes = "Actualiza una actividad con los parámetros proporcionados")
-	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
-			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
-			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
-	public Response updateActividad(@PathParam("id") String id, Actividad actividad) throws BookleException {
-		controlador.updateActividad(id, actividad.getTitulo(), actividad.getDescripcion(), actividad.getProfesor(), actividad.getEmail());
-		return Response.status(Response.Status.NO_CONTENT).build();
-	}
-	
+	/*
+	 * @PUT
+	 * 
+	 * @Path("/{id}")
+	 * 
+	 * @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	 * 
+	 * @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	 * 
+	 * @ApiOperation(value = "Actualiza una actividad", notes =
+	 * "Actualiza una actividad con los parámetros proporcionados")
+	 * 
+	 * @ApiResponses(value = { @ApiResponse(code =
+	 * HttpServletResponse.SC_NO_CONTENT, message = ""),
+	 * 
+	 * @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message =
+	 * "Actividad no encontrada"),
+	 * 
+	 * @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message =
+	 * "El formato de la peticion no es correcto") }) public Response
+	 * updateActividad(@PathParam("id") String id, Actividad actividad) throws
+	 * BookleException { controlador.updateActividad(id, actividad.getTitulo(),
+	 * actividad.getDescripcion(), actividad.getProfesor(),
+	 * actividad.getEmail()); return
+	 * Response.status(Response.Status.NO_CONTENT).build(); }
+	 */
 	@DELETE
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Elimina una actividad", notes = "Elimina una actividad utilizando su identificador, retorna false en caso de fallo", response = Boolean.class)
+	@ApiOperation(value = "Elimina una actividad", notes = "Elimina una actividad utilizando su identificador, retorna false en caso de fallo")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
@@ -87,7 +100,7 @@ public class BookleRest {
 
 	@POST
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Crea una actividad", notes = "Crea una actividad con los parametros proporcionados, retorna su id", response = String.class)
+	@ApiOperation(value = "Crea una actividad", notes = "Crea una actividad con los parametros proporcionados, retorna su id", response = URI.class)
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
@@ -106,13 +119,13 @@ public class BookleRest {
 
 	@POST
 	@Path("/{id}/agenda")
-	@ApiOperation(value = "Crea un dia", notes = "Crea un dia en una agenda dentro de la actividad con los parámetros proporcionados")
+	@ApiOperation(value = "Crea un dia", notes = "Crea un dia en una agenda dentro de la actividad con los parámetros proporcionados", response = URI.class)
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
 	public Response addDiaActividad(@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
 			@ApiParam(value = "fecha del dia", required = true) @FormParam("fecha") String fecha,
-			@ApiParam(value = "turnos del dia", required = true) @PathParam("turno") int turno)
+			@ApiParam(value = "turnos del dia", required = true) @FormParam("turno") int turno)
 			throws ParseException, BookleException {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		controlador.addDiaActividad(id, format.parse(fecha), turno);
@@ -126,7 +139,6 @@ public class BookleRest {
 	@Path("/{id}/agenda/{fecha}")
 	@ApiOperation(value = "Elimina un dia", notes = "Elimina un dia de la agenda de la actividad en base a su fecha")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
-			@ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Actividad no encontrada"),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion no es correcto") })
 	public Response removeDiaActividad(
 			@ApiParam(value = "id de la actividad", required = true) @PathParam("id") String id,
