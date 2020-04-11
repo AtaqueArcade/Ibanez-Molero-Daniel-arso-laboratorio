@@ -130,7 +130,7 @@ public class BookleRest {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		controlador.addDiaActividad(id, format.parse(fecha), turno);
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-		builder.path(fecha);
+		builder.path(format.parse(fecha).toString());
 		URI nuevaURL = builder.build();
 		return Response.created(nuevaURL).build();
 	}
@@ -195,7 +195,7 @@ public class BookleRest {
 		controlador.setHorario(id, format.parse(fecha), indice, horario);
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
-
+	
 	@POST
 	@Path("/{id}/agenda/{fecha}/turno/{indice}/reserva")
 	@ApiOperation(value = "Crea una reserva", notes = "Crea una reserva para un turno determinado, retorna su id")
@@ -231,7 +231,6 @@ public class BookleRest {
 		controlador.removeReserva(id, ticket);
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
-
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Retorna un listado de actividades", response = ListadoActividades.class)
@@ -243,8 +242,14 @@ public class BookleRest {
 		ListadoActividades listado = new ListadoActividades();
 		for (String id : actividades) {
 			Actividad actividad = controlador.getActividad(id);
-			if ((actividad.getProfesor().equals(profesor) || profesor == null)
-					&& (actividad.getTitulo().contains(titulo) || titulo == null)) {
+			boolean adder = true;
+			if (profesor != null)
+				if (!actividad.getProfesor().equals(profesor))
+					adder = false;
+			if (titulo != null)
+				if (!actividad.getTitulo().contains(titulo))
+					adder = false;
+			if (adder) {
 				UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 				builder.path(id);
 				String url = builder.build().toString();
