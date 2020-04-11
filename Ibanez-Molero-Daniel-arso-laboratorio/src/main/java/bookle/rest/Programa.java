@@ -41,21 +41,48 @@ public class Programa {
 		String actividad1URL = respuesta.getLocation().toString();
 
 		System.out.println("Actividad creada: " + actividad1URL);
+
+		// 2. Consulta actividad
+
+		WebResource recursoActividad1 = cliente.resource(actividad1URL);
+
+		System.out.println("Consultando actividad: " + recursoActividad1);
+
+		ClientResponse respuesta2 = recursoActividad1.accept(MediaType.APPLICATION_XML).method("GET",
+				ClientResponse.class);
+
+		System.out.println("Codigo de retorno: " + respuesta2.getStatusInfo());
+
+		Actividad actividad = respuesta2.getEntity(Actividad.class);
+
+		System.out.println("Actividad titulo: " + actividad.getTitulo());
+
+		// 3. Actualiza actividad
+
+		System.out.println("Actualizando actividad " + recursoActividad1 + "...");
+		parametros = new MultivaluedMapImpl();
+		parametros.add("titulo", "testTitulo");
+		parametros.add("descripcion", "testDesc");
+		parametros.add("profesor", "testProfesor");
+		parametros.add("email", "testEmail");
+		ClientResponse respuesta3 = recursoActividad1.method("PUT", ClientResponse.class, parametros);
+		System.out.println("Codigo de retorno: " + respuesta3.getStatusInfo());
+		//
+		System.out.println("Consultando actividad " + recursoActividad1 + " actualizada");
+
+		respuesta3 = recursoActividad1.accept(MediaType.APPLICATION_XML).method("GET", ClientResponse.class);
+
+		System.out.println("Codigo de retorno: " + respuesta2.getStatusInfo());
+
+		actividad = respuesta3.getEntity(Actividad.class);
+
+		System.out.println("Actividad titulo: " + actividad.getTitulo());
+
+		// 4. Elimina actividad
 		
-        // 2. Consulta actividad
-        
-        WebResource recursoActividad1 = cliente.resource(actividad1URL);
-        
-        System.out.println("Consultando actividad: " + recursoActividad1);
-        
-        ClientResponse respuesta2 = recursoActividad1
-                            .accept(MediaType.APPLICATION_XML)
-                            .method("GET", ClientResponse.class);
-        
-        System.out.println("Codigo de retorno: " + respuesta2.getStatusInfo());
-        
-        Actividad actividad = respuesta2.getEntity(Actividad.class);
-        
-        System.out.println("Actividad titulo: " + actividad.getTitulo());
+		System.out.println("Eliminando actividad " + recursoActividad1 + "...");
+		ClientResponse respuesta4 = recursoActividad1.method("DELETE", ClientResponse.class);
+		System.out.println("Codigo de retorno: " + respuesta4.getStatusInfo());
+		System.out.println("Pruebas concluidas.");
 	}
 }
