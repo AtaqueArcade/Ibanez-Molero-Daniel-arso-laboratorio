@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Apuntate
-{
+{ 
     public class Program
     {
         public static vo id Main(string[] args)
