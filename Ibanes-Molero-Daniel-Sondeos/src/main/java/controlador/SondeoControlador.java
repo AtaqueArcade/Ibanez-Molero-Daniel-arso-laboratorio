@@ -2,16 +2,16 @@ package controlador;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import tipos.TipoSondeo;
+import javax.json.JsonObject;
 
 public interface SondeoControlador {
 
-	String createSondeo(String pregunta, List<String> respuesta, LocalDateTime apertura, LocalDateTime cierre);
+	public String createSondeo(String pregunta, List<String> respuestas, String instrucciones, LocalDateTime apertura,
+			LocalDateTime cierre, int minSeleccion, int maxSeleccion, String visibilidad);
 
-	void updateSondeo(TipoSondeo sondeo, int minSeleccion, int maxSeleccion, String visibilidad);
+	public void updateSondeo(String id, List<String> respuestas);
 
-	TipoSondeo getSondeo(String id);
+	public JsonObject getSondeo(String id);
 
-	boolean removeSondeo(String id);
-
+	public boolean removeSondeo(String id);
 }
