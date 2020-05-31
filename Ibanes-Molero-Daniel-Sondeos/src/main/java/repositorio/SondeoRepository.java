@@ -48,10 +48,11 @@ public class SondeoRepository {
 		return ((ObjectId) doc.get("_id")).toHexString();
 	}
 
-	public void updateSondeo(String id, List<String> respuestas) {
-		Document doc = sondeos.find(Filters.eq("_id", id)).first();
-		doc.replace("respuestas", respuestas);
-
+	public boolean updateSondeo(String id, List<String> respuestas) {
+		Document doc = sondeos.find(Filters.eq("_id", new ObjectId(id))).first();
+		if (doc != null)
+			return (doc.replace("respuestas", respuestas) != null);
+		return false;
 	}
 
 	public JsonObject getSondeo(String id) {
@@ -68,7 +69,7 @@ public class SondeoRepository {
 	}
 
 	public boolean removeSondeo(String id) {
-		return sondeos.deleteOne(Filters.eq("_id", id)).getDeletedCount() > 0;
+		return sondeos.deleteOne(Filters.eq("_id", new ObjectId(id))).getDeletedCount() > 0;
 	}
 
 	public void resetSondeos() {
