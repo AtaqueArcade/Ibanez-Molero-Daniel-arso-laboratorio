@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actividad xmlns="http://www.um.es/bookle">
+    <id>7aca1a97-4cc6-4905-8faa-2e5c6cdfa371</id>
+    <titulo>a</titulo>
+    <profesor>a</profesor>
+    <agenda>
+        <fecha>1997-01-01</fecha>
+        <turno>
+            <horario></horario>
+        </turno>
+        <turno>
+            <horario></horario>
+        </turno>
+    </agenda>
+    <agenda>
+        <fecha>1997-02-04</fecha>
+        <turno>
+            <horario></horario>
+        </turno>
+        <turno>
+            <horario></horario>
+        </turno>
+    </agenda>
+</actividad>

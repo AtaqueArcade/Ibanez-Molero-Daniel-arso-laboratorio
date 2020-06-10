@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.um.es/sondeo" xmlns="http://www.um.es/sondeo"
+	elementFormDefault="qualified">
+	<xs:element name="TipoSondeo">
+		<xs:complexType>		
+			<xs:sequence>
+				<xs:element name="respuesta" type="xs:string"
+					minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="pregunta" type="xs:string" use="required" />
+			<xs:attribute name="instrucciones" type="xs:string" use="optional" />
+			<xs:attribute name="apretura" type="xs:dateTime" use="required" />
+			<xs:attribute name="cierre" type="xs:dateTime" use="required" />
+			<xs:attribute default="0" name="minSeleccion" type="xs:int" use="optional" />
+			<xs:attribute default="2" name="maxSeleccion" type="xs:int" use="optional" />	
+			<xs:attribute default="siempre" name="visibilidad" use="optional">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="siempre" />
+						<xs:enumeration value="participantes" />
+						<xs:enumeration value="fecha" />
+						<xs:enumeration value="nunca" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
