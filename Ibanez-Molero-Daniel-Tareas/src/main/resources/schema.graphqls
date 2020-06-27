@@ -1,0 +1,31 @@
+type Tarea {
+  id: ID!
+  autor: String!
+  receptores: String!
+  titulo: String!
+  contenido: User!
+}
+
+type User {
+	nombre: String!
+	email: String!
+}
+
+type Query {
+  allTareas: [Tarea]
+  allUsers: [User]
+  tareasByUser(user: String!): [Tarea]
+  tareasByAutor(user: String!): [Tarea]
+}
+
+type Mutation {
+  createPublicacion(autor: String!, urlAutor: String!, urlPublicacion: String!, userEmail: String!): Publicacion
+  createUser(nombre: String!, email: String!): User
+  resetRepositories: User
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
