@@ -12,12 +12,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- Para cola RabbitMQ en la nube -->
-		<dependency>
-			<groupId>com.rabbitmq</groupId>
-			<artifactId>amqp-client</artifactId>
-			<version>5.9.0</version>
-		</dependency>
 		<!-- Para el servidor MongoDB -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
