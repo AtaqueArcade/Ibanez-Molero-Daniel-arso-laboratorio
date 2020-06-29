@@ -1,6 +1,6 @@
 package controlador;
 
-import java.util.List;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import repositorio.UsuarioRepository;
 
@@ -25,7 +25,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 			throw new IllegalArgumentException("El correo del usuario no puede ser nulo o vacio");
 		if (nombre == null || nombre.equals(""))
 			throw new IllegalArgumentException("El nombre del usuario no pueden ser nulo o vacio");
-		if (rol == null || (rol.equals("estudiante") || rol.equals("profesor")))
+		if ((rol == null) || (!rol.equals("estudiante") && !rol.equals("profesor")))
 			throw new IllegalArgumentException("El rol ha de ser 'estudiante' o 'profesor'");
 
 		return repositorio.saveUsuario(correo, nombre, rol);
@@ -42,17 +42,17 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 			throw new IllegalArgumentException("El correo del usuario no puede ser nulo o vacio");
 		JsonObject result = repositorio.getUsuario(correo);
 		if (result != null)
-			result.get("rol");
+			return result.getString("rol");
 		return null;
 	}
 
 	@Override
-	public List<JsonObject> getAllEstudiantes() {
+	public JsonArray getAllEstudiantes() {
 		return repositorio.getAllByRol("estudiante");
 	}
 
 	@Override
-	public List<JsonObject> getAllTeachers() {
+	public JsonArray getAllProfesores() {
 		return repositorio.getAllByRol("profesor");
 	}
 }

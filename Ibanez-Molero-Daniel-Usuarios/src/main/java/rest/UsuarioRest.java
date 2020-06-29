@@ -1,6 +1,9 @@
 package rest;
 
 import java.net.URI;
+
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.FormParam;
@@ -34,9 +37,9 @@ public class UsuarioRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion es incorrecto") })
 	public Response crearUsuario(
-			@ApiParam(value = "Pregunta del sondeo", required = true) @FormParam("correo") String correo,
-			@ApiParam(value = "Pregunta del sondeo", required = true) @FormParam("nombre") String nombre,
-			@ApiParam(value = "Pregunta del sondeo", required = true) @FormParam("rol") String rol)
+			@ApiParam(value = "Correo del usuario", required = true) @FormParam("correo") String correo,
+			@ApiParam(value = "Nombre del usuario", required = true) @FormParam("nombre") String nombre,
+			@ApiParam(value = "Rol del usuario", required = true) @FormParam("rol") String rol)
 			throws UsuarioException {
 		String id = controlador.createUsuario(correo, nombre, rol);
 		if (id != null) {
@@ -55,9 +58,38 @@ public class UsuarioRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El usuario pedido no existe") })
 	public Response getUsuario(
-			@ApiParam(value = "Pregunta del sondeo", required = true) @PathParam("correo") String correo) {
+			@ApiParam(value = "Correo del usuario", required = true) @PathParam("correo") String correo) {
 		JsonObject usuario = controlador.getUsuario(correo);
 		return Response.status(Response.Status.OK).entity(usuario).build();
 	}
 
+	@POST
+	@Path("/{correo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Recuperar rol", notes = "Devuelve el rol de un usuario", response = String.class)
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El usuario pedido no existe") })
+	public Response getRol(
+			@ApiParam(value = "Correo del usuario", required = true) @PathParam("correo") String correo) {
+		String rol = controlador.getRol(correo);
+		return Response.status(Response.Status.OK).entity(Json.createObjectBuilder().add("rol", rol).build()).build();
+	}
+
+	@GET
+	@Path("/alumnos")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Recuperar alumnos", notes = "Devuelve un array que contiene todos los alumnos", response = JsonArray.class)
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = "") })
+	public Response getAlumnos() {
+		return Response.status(Response.Status.OK).entity(controlador.getAllEstudiantes()).build();
+	}
+
+	@GET
+	@Path("/profesores")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Recuperar profesores", notes = "Devuelve un array que contiene todos los profesores", response = JsonArray.class)
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = "") })
+	public Response getProfesores() {
+		return Response.status(Response.Status.OK).entity(controlador.getAllProfesores()).build();
+	}
 }

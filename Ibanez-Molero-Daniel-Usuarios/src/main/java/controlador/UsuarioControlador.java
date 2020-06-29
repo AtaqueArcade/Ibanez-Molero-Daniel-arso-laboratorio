@@ -1,6 +1,6 @@
 package controlador;
 
-import java.util.List;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 public interface UsuarioControlador {
@@ -10,7 +10,7 @@ public interface UsuarioControlador {
 
 	public String getRol(String correo);
 
-	public List<JsonObject> getAllEstudiantes();
+	public JsonArray getAllEstudiantes();
 
-	public List<JsonObject> getAllTeachers();
+	public JsonArray getAllProfesores();
 }

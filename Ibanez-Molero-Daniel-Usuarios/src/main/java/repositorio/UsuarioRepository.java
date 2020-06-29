@@ -1,8 +1,8 @@
 package repositorio;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -26,7 +26,7 @@ public class UsuarioRepository {
 
 	private UsuarioRepository() {
 		MongoClient mongoClient = MongoClients.create(
-				"mongodb+srv://ataquearcade:cNyajG9zxdHm2RE@arso-vaorn.mongodb.net/test?retryWrites=true&w=majority");
+				"mongodb+srv://ataquearcade:huWAN4jGusPRjqV@arso-vaorn.mongodb.net/ArSo?retryWrites=true&w=majority");
 		MongoDatabase database = mongoClient.getDatabase("ArSo");
 		this.usuarios = database.getCollection("usuarios");
 	}
@@ -47,14 +47,14 @@ public class UsuarioRepository {
 		return usuario;
 	}
 
-	public List<JsonObject> getAllByRol(String rol) {
-		LinkedList<JsonObject> result = new LinkedList<>();
+	public JsonArray getAllByRol(String rol) {
+		JsonArrayBuilder result = Json.createArrayBuilder();
 		FindIterable<Document> query = usuarios.find(Filters.eq("rol", rol));
 		for (Document doc : query) {
 			JsonObject usuario = Json.createObjectBuilder().add("correo", doc.getString("correo"))
 					.add("nombre", doc.getString("nombre")).add("rol", doc.getString("rol")).build();
 			result.add(usuario);
 		}
-		return result;
+		return result.build();
 	}
 }
