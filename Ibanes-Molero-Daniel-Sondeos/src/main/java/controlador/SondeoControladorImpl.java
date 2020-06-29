@@ -59,7 +59,6 @@ public class SondeoControladorImpl implements SondeoControlador {
 		boolean exclusive = false; // exclusive - if queue only will be used by one connection
 		boolean autoDelete = false; // autodelete - queue is deleted when last consumer unsubscribes
 		channel.queueDeclare(queue, durable, exclusive, autoDelete, null);
-
 		exchangeName = "";
 		routingKey = "sondeos";
 	}
