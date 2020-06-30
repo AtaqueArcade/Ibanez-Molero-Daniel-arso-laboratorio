@@ -7,10 +7,13 @@ import rest.SondeoException;
 
 public interface SondeoControlador {
 
-	public String createSondeo(String pregunta, List<String> respuestas, String instrucciones, String apertura,
-			String cierre, int minSeleccion, int maxSeleccion, String visibilidad) throws SondeoException;
+	String createSondeo(String usuario, String pregunta, List<String> respuestas, String instrucciones,
+			String sApertura, String sCierre, int minSeleccion, int maxSeleccion, String visibilidad)
+			throws SondeoException;
 
-	public boolean updateSondeo(String id, List<String> respuestas);
+	boolean updateRespuestas(String id, List<String> respuestas);
+
+	boolean addEntrada(String id, String correo, String contenido) throws SondeoException;
 
 	public JsonObject getSondeo(String id);
 

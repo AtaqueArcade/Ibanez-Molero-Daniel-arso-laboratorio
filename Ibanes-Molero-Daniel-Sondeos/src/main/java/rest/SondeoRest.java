@@ -36,6 +36,7 @@ public class SondeoRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_CREATED, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El formato de la peticion es incorrecto") })
 	public Response crearSondeo(
+			@ApiParam(value = "Correo del usuario creador", required = true) @FormParam("correo") String correo,
 			@ApiParam(value = "Pregunta del sondeo", required = true) @FormParam("pregunta") String pregunta,
 			@ApiParam(value = "Respuestas al sondeo") @FormParam("respuestas") List<String> respuestas,
 			@ApiParam(value = "Instrucciones del sondeo", required = true) @FormParam("instrucciones") String instrucciones,
@@ -45,8 +46,8 @@ public class SondeoRest {
 			@ApiParam(value = "Máximo de respuestas seleccionadas", required = true) @FormParam("maxSeleccion") int maxSeleccion,
 			@ApiParam(value = "Visibilidad del sondeo", required = true) @FormParam("visibilidad") String visibilidad)
 			throws SondeoException {
-		String id = controlador.createSondeo(pregunta, respuestas, instrucciones, apertura, cierre, minSeleccion,
-				maxSeleccion, visibilidad);
+		String id = controlador.createSondeo(correo, pregunta, respuestas, instrucciones, apertura, cierre,
+				minSeleccion, maxSeleccion, visibilidad);
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 		builder.path(id);
 		URI nuevaURL = builder.build();
@@ -66,12 +67,26 @@ public class SondeoRest {
 
 	@POST
 	@Path("/{id}")
-	@ApiOperation(value = "Actualizar sondeo", notes = "Actualiza las respuestas de un sondeo")
+	@ApiOperation(value = "Actualizar respuestas", notes = "Actualiza las respuestas de un sondeo")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
 	public Response updateSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
 			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") List<String> respuesta) {
-		if (controlador.updateSondeo(id, respuesta))
+		if (controlador.updateRespuestas(id, respuesta))
+			return Response.status(Response.Status.NO_CONTENT).build();
+		return Response.status(Response.Status.NOT_MODIFIED).build();
+	}
+
+	@POST
+	@Path("/{id}/respuestas")
+	@ApiOperation(value = "Responder sondeo", notes = "Anade respuestas a un sondeo")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
+	public Response responder(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
+			@ApiParam(value = "Correo del estudiante", required = true) @FormParam("correo") String correo,
+			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") String contenido)
+			throws SondeoException {
+		if (controlador.addEntrada(id, correo, contenido))
 			return Response.status(Response.Status.NO_CONTENT).build();
 		return Response.status(Response.Status.NOT_MODIFIED).build();
 	}
