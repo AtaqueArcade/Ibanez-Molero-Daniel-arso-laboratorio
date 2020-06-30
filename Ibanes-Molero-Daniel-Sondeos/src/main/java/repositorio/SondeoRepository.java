@@ -2,6 +2,7 @@ package repositorio;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -56,21 +57,20 @@ public class SondeoRepository {
 	}
 
 	public boolean updateRespuestas(String id, List<String> respuestas) {
-		Document doc = sondeos.find(Filters.eq("_id", new ObjectId(id))).first();
-		if (doc != null)
-			return (doc.replace("respuestas", respuestas) != null);
-		return false;
+		return sondeos.updateOne(Filters.eq("_id", new ObjectId(id)),
+				new Document("$set", new Document("respuestas", respuestas))).wasAcknowledged();
 	}
 
 	public boolean addEntrada(String id, Entrada e) {
 		Document doc = sondeos.find(Filters.eq("_id", new ObjectId(id))).first();
-		JsonArrayBuilder entradas = Json.createArrayBuilder();
 		if (doc != null) {
+			List<String> entradas = new LinkedList<String>();
 			parseEntradas(doc.getString("entradas")).forEach(entrada -> entradas.add(entrada));
-			entradas.add(parseEntrada(e));
-			System.out.print(entradas.build());
+			entradas.add(parseEntradaToString(e));
+			return sondeos.updateOne(Filters.eq("_id", new ObjectId(id)),
+					new Document("$set", new Document("entradas", entradas))).wasAcknowledged();
 		}
-		return (doc.replace("entradas", entradas.build()) != null);
+		return false;
 	}
 
 	public JsonObject getSondeo(String id) {
@@ -97,16 +97,20 @@ public class SondeoRepository {
 
 	// Supporting methods
 	private List<String> parseRespuestas(String s) {
+		if (s.isEmpty())
+			return new LinkedList<String>();
 		List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
 		return list;
 	}
 
 	private List<String> parseEntradas(String s) {
+		if (s.isEmpty())
+			return new LinkedList<String>();
 		List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
 		return list;
 	}
 
-	private String parseEntrada(Entrada e) {
+	private String parseEntradaToString(Entrada e) {
 		return e.getCorreo() + ";" + e.getSeleccion();
 	}
 }

@@ -165,10 +165,4 @@ public class SondeoControladorImpl implements SondeoControlador {
 		}
 		throw new SondeoException("Respuesta con formato incorrecto recibida del servidor de usuarios");
 	}
-
-	public static void main(String[] args) throws SondeoException {
-		SondeoControlador sc = SondeoControladorImpl.getInstance();
-		sc.createSondeo("correoprofe", "pregunta", new LinkedList<String>(), "instrucciones",
-				LocalDateTime.now().toString(), LocalDateTime.now().toString(), 1, 2, "visibilidad");
-	}
 }
