@@ -51,9 +51,7 @@ public class UsuarioRepository {
 		JsonArrayBuilder result = Json.createArrayBuilder();
 		FindIterable<Document> query = usuarios.find(Filters.eq("rol", rol));
 		for (Document doc : query) {
-			JsonObject usuario = Json.createObjectBuilder().add("correo", doc.getString("correo"))
-					.add("nombre", doc.getString("nombre")).add("rol", doc.getString("rol")).build();
-			result.add(usuario);
+			result.add(doc.getString("correo"));
 		}
 		return result.build();
 	}
