@@ -95,7 +95,8 @@ public class SondeoControladorImpl implements SondeoControlador {
 		try {
 			id = repositorio.saveSondeo(usuario, pregunta, respuestas, instrucciones, apertura, cierre, maxSeleccion,
 					minSeleccion, visibilidad);
-			channel.basicPublish(exchangeName, routingKey, null, id.getBytes());
+			String infoTarea = usuario + ";" + getAllAlumnos() + ";" + "SONDEO" + ";" + pregunta;
+			channel.basicPublish(exchangeName, routingKey, null, infoTarea.getBytes());
 		} catch (IOException e) {
 			throw new SondeoException("No se ha podido realizar la conexión con la cola de mensajes");
 		}
@@ -139,7 +140,7 @@ public class SondeoControladorImpl implements SondeoControlador {
 		return repositorio.removeSondeo(id);
 	}
 
-	// Supporting method
+	// Supporting methods
 	private String getRol(String correo) throws SondeoException {
 		Client client = Client.create();
 		String requestURL = "http://localhost:8083/api/usuarios/" + correo;
@@ -153,16 +154,49 @@ public class SondeoControladorImpl implements SondeoControlador {
 		JsonParser parser = Json.createParser(inputStream);
 		while (parser.hasNext()) {
 			JsonParser.Event event = parser.next();
-			if (event == JsonParser.Event.VALUE_STRING) {
-				try {
-					parser.close();
-					inputStream.close();
-				} catch (IOException e) {
-					throw new SondeoException("Error en el stream con el servidor de usuarios");
+			if (event == JsonParser.Event.KEY_NAME) {
+				String key = parser.getString();
+				event = parser.next();
+				if (key.equals("chars")) {
+					try {
+						parser.close();
+						inputStream.close();
+					} catch (IOException e) {
+						throw new SondeoException("Error en el stream con el servidor de usuarios");
+					}
+					return parser.getString();
 				}
-				return parser.getString();
 			}
 		}
 		throw new SondeoException("Respuesta con formato incorrecto recibida del servidor de usuarios");
+	}
+
+	private List<String> getAllAlumnos() throws SondeoException {
+		LinkedList<String> alumnos = new LinkedList<String>();
+		Client client = Client.create();
+		String requestURL = "http://localhost:8083/api/usuarios/alumnos";
+		WebResource wr = client.resource(requestURL);
+		ClientResponse response = wr.method("GET", ClientResponse.class);
+		if (response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
+			throw new SondeoException("La petición al servidor de usuarios no ha devuelto ningun dato");
+		}
+		InputStream inputStream = response.getEntityInputStream();
+		JsonParser parser = Json.createParser(inputStream);
+		while (parser.hasNext()) {
+			JsonParser.Event event = parser.next();
+			if (event == JsonParser.Event.KEY_NAME) {
+				String key = parser.getString();
+				event = parser.next();
+				if (key.equals("chars"))
+					alumnos.add(parser.getString());
+			}
+		}
+		try {
+			parser.close();
+			inputStream.close();
+		} catch (IOException e) {
+			throw new SondeoException("Error en el stream con el servidor de usuarios");
+		}
+		return alumnos;
 	}
 }
