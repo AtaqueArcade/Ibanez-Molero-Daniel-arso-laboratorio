@@ -4,27 +4,21 @@ import java.util.List;
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
 
 public class Query implements GraphQLRootResolver {
-	private final TareaRepository teareaRepository;
-	private final UserRepository userRepository;
+	private final TareaRepository tareaRepository;
 
-	public Query(TareaRepository tareaRepository, UserRepository userRepository) {
-		this.teareaRepository = tareaRepository;
-		this.userRepository = userRepository;
+	public Query(TareaRepository tareaRepository) {
+		this.tareaRepository = tareaRepository;
 	}
 
 	public List<Tarea> allTareas() {
-		return teareaRepository.getAllTareas();
-	}
-
-	public List<User> allUsers() {
-		return userRepository.getAllUsers();
+		return tareaRepository.getAllTareas();
 	}
 
 	public List<Tarea> tareasByUser(String user) {
-		return teareaRepository.getTareasReceptor(user);
+		return tareaRepository.getTareasReceptor(user);
 	}
 
 	public List<Tarea> tareasByAutor(String user) {
-		return teareaRepository.getTareasAutor(user);
+		return tareaRepository.getTareasAutor(user);
 	}
 }
