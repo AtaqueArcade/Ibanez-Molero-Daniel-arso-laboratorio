@@ -1,0 +1,22 @@
+type Tarea {
+  id: ID!
+  autor: String!
+  receptores: [String!]!
+  titulo: String!
+  contenido: String!
+}
+
+type Query {
+  allTareas: [Tarea]
+  tareasByUser(user: String!): [Tarea]
+  tareasByAutor(user: String!): [Tarea]
+}
+
+type Mutation {
+  createTarea(autor: String!, receptores: [String!]!, titulo: String!, contenido: String!): Tarea
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
