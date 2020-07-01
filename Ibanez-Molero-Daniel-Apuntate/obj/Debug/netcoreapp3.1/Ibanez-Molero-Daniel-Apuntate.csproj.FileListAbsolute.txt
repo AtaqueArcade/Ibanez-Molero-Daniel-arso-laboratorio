@@ -1,0 +1,74 @@
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.exe
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.deps.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.dev.json
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.pdb
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.dll
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.pdb
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csprojAssemblyReference.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfoInputs.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfo.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csproj.CoreCompileInputs.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.TagHelpers.input.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.TagHelpers.output.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorCoreGenerate.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Error.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Index.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Privacy.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Shared\_Layout.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Shared\_ValidationScriptsPartial.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\_ViewImports.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\_ViewStart.cshtml.g.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorTargetAssemblyInfo.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorTargetAssemblyInfo.cs
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.pdb
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\staticwebassets\Ibanez-Molero-Daniel-Apuntate.StaticWebAssets.Manifest.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\staticwebassets\Ibanez-Molero-Daniel-Apuntate.StaticWebAssets.xml
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.pdb
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.genruntimeconfig.cache
+C:\Users\Dani\Desktop\Demos\Eclipse workspace\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csproj.CopyComplete
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.exe
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.deps.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.dev.json
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.pdb
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.dll
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.pdb
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csprojAssemblyReference.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfoInputs.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfo.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csproj.CoreCompileInputs.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.TagHelpers.input.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.TagHelpers.output.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorCoreGenerate.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Error.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Index.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Privacy.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Shared\_Layout.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\Shared\_ValidationScriptsPartial.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\_ViewImports.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Razor\Pages\_ViewStart.cshtml.g.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorTargetAssemblyInfo.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.RazorTargetAssemblyInfo.cs
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.Views.pdb
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\staticwebassets\Ibanez-Molero-Daniel-Apuntate.StaticWebAssets.Manifest.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\staticwebassets\Ibanez-Molero-Daniel-Apuntate.StaticWebAssets.xml
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.pdb
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.genruntimeconfig.cache
+C:\Users\Dani\git\Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp3.1\Ibanez-Molero-Daniel-Apuntate.csproj.CopyComplete
