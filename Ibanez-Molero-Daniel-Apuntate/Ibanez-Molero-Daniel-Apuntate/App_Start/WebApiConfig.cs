@@ -16,7 +16,7 @@ namespace Ibanez_Molero_Daniel_Apuntate
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "api/{controller}/reuniones/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
         }

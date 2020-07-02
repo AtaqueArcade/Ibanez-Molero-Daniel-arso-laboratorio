@@ -11,7 +11,6 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
-
             return View();
         }
     }

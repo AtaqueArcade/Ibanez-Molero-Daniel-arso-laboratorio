@@ -1,6 +1,14 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Ibanez-Molero-Daniel-Apuntate",
+    "\\Ibanez-Molero-Daniel-Apuntate\\apuntate",
+    "\\Ibanez-Molero-Daniel-Apuntate\\apuntate\\apuntate",
+    "\\Ibanez-Molero-Daniel-Apuntate\\apuntate\\apuntate\\bin",
+    "\\Ibanez-Molero-Daniel-Apuntate\\apuntate\\apuntate\\bin\\roslyn",
+    "\\Ibanez-Molero-Daniel-Apuntate\\Ibanez-Molero-Daniel-Apuntate",
+    "\\Ibanez-Molero-Daniel-Apuntate\\Ibanez-Molero-Daniel-Apuntate\\Controllers"
   ],
+  "SelectedNode": "\\Ibanez-Molero-Daniel-Apuntate\\apuntate\\apuntate\\bin\\roslyn\\Microsoft.CodeAnalysis.dll",
   "PreviewInSolutionExplorer": false
 }
