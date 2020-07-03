@@ -23,16 +23,16 @@ namespace Ibanez_Molero_Daniel_Apuntate.Repositories
             return reunion["_id"].ToString();
         }
 
-        public void UpdateReunion(string id, BsonDocument reunion)
+        public void UpdateReunion(ObjectId id, BsonDocument reunion)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
             reuniones.UpdateOne(filter, reunion);
         }
 
-        public BsonDocument GetReunion(string id) =>
+        public BsonDocument GetReunion(ObjectId id) =>
             reuniones.Find(Builders<BsonDocument>.Filter.Eq("_id", id)).FirstOrDefault();
 
-        public bool RemoveReunion(string id) =>
+        public bool RemoveReunion(ObjectId id) =>
             reuniones.DeleteOne(Builders<BsonDocument>.Filter.Eq("_id", id)).DeletedCount > 0;
 
         public List<BsonDocument> GetAll() => reuniones.Find(f => true).ToList();

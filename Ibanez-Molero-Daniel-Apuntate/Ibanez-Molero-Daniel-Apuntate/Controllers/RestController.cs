@@ -14,7 +14,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         }
 
         // POST: api/Rest/reuniones/
-        public string CreateReunion(Reunion reunion) => _controller.CreateReunion(reunion);
+        public string CreateReunion([FromBody] Reunion reunion) => _controller.CreateReunion(reunion);
 
         // GET: api/Rest/reuniones/{id}
         public string GetReunion([FromUri] string id) => _controller.GetReunion(id).ToJson();
@@ -23,6 +23,9 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public string GetAllReuniones() => _controller.GetAllReuniones();
 
         // DELETE: api/Rest/reuniones/{id}
-        public bool Delete([FromUri]string id) => _controller.RemoveReunion(id);
+        public void Delete([FromUri]string id) => _controller.RemoveReunion(id);
+
+        // POST: api/Rest/reuniones/{id}
+        public void JoinReunion([FromUri] string id, [FromBody] string correo) => _controller.OcuparPlaza(id,correo);
     }
 }

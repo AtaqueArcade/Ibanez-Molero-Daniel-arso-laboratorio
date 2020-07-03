@@ -34,10 +34,10 @@ namespace Ibanez_Molero_Daniel_Apuntate.Models
         public string Frecuencia { get; set; }
 
         [DataMember(Name = "apertura")]
-        public string Apertura { get; set; }
+        public DateTime Apertura { get; set; }
 
         [DataMember(Name = "cierre")]
-        public string Cierre { get; set; }
+        public DateTime Cierre { get; set; }
 
         [DataMember(Name = "componentes")]
         public int Componentes { get; set; }

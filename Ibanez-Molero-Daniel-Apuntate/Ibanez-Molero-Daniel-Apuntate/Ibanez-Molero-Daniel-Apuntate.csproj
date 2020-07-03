@@ -201,6 +201,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\RestController.cs" />
+    <Compile Include="Controllers\ReunionException.cs" />
     <Compile Include="Repositories\RepositorioReuniones.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReunionController.cs" />
