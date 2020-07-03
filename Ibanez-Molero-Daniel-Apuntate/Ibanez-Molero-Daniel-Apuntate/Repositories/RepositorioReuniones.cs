@@ -26,7 +26,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Repositories
         public void UpdateReunion(ObjectId id, BsonDocument reunion)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
-            reuniones.UpdateOne(filter, reunion);
+            reuniones.ReplaceOneAsync(filter, reunion);
         }
 
         public BsonDocument GetReunion(ObjectId id) =>

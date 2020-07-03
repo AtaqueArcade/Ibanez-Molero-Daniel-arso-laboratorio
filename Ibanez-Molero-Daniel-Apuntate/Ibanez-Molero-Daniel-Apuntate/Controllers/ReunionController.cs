@@ -1,8 +1,14 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Text;
 using Ibanez_Molero_Daniel_Apuntate.Models;
-using MongoDB.Bson;
 using Ibanez_Molero_Daniel_Apuntate.Repositories;
 using Microsoft.Ajax.Utilities;
+using MongoDB.Bson;
+using System;
+using RabbitMQ.Client;
+using System.Text;
 
 namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 {
@@ -10,7 +16,12 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
     {
         private RepositorioReuniones _repositorio;
 
-        public ReunionController() => _repositorio = new RepositorioReuniones();
+        public ReunionController()
+        {
+            _repositorio = new RepositorioReuniones();
+            var factory = new ConnectionFactory() { Uri = new Uri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy") };
+            var channel = factory.CreateConnection().CreateModel();
+        }
 
         public string CreateReunion(Reunion r)
         {
@@ -25,18 +36,16 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             if (r.Cierre.CompareTo(r.Apertura) < 0)
                 throw new ReunionException("Las fechas de apertura y cierre han de ser coherentes");
             //TODO if r.getOrganizador is profesor...
-            var grupos = new BsonArray();
             var tiempoDeIntervalo = r.Fin.Subtract(r.Inicio).TotalMinutes / (r.Componentes / r.Intervalos);
-            for (int i = 0; i < r.Componentes / r.Intervalos; i++)
+            var componentes = new BsonArray();
+            var grupos = new BsonDocument
             {
-                var componentes = new BsonArray();
-                grupos.Add(new BsonDocument
-                {
-                    {"plazasDisponibles", r.Intervalos},
-                    {"tiempoDisponible", tiempoDeIntervalo},
-                    {"componentes", componentes},
-                });
-            }
+                {"plazasDisponibles", r.Componentes},
+                {"componentesPorGrupo", r.Intervalos},
+                {"tiempoPorIntervalo", tiempoDeIntervalo},
+                {"componentes", componentes}
+            };
+
             var reunion = new BsonDocument
             {
                 {"titulo", r.Titulo}, {"organizador", r.Organizador},
@@ -50,7 +59,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
         public string GetReunion(string id)
         {
-            ObjectId mongoId = new ObjectId();
+            ObjectId mongoId;
             if (!id.IsNullOrWhiteSpace())
             {
                 if (!ObjectId.TryParse(id, out mongoId))
@@ -64,7 +73,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
         public void RemoveReunion(string id)
         {
-            ObjectId mongoId = new ObjectId();
+            ObjectId mongoId;
             if (!id.IsNullOrWhiteSpace())
             {
                 if (!ObjectId.TryParse(id, out mongoId))
@@ -76,7 +85,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
         public void OcuparPlaza(string id, string correo)
         {
-            ObjectId mongoId = new ObjectId();
+            ObjectId mongoId;
             if (!id.IsNullOrWhiteSpace())
             {
                 if (!ObjectId.TryParse(id, out mongoId))
@@ -84,17 +93,45 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
             //TODO (if correo != alumno...)
-            var reunion = _repositorio.GetReunion(mongoId);
-            var grupos= reunion["grupos"].AsBsonArray;
-            foreach (var grupo in grupos)
+            var reunion = _repositorio.GetReunion(mongoId).AsBsonDocument;
+            var grupos = reunion["grupos"].AsBsonDocument;
+            if (grupos["plazasDisponibles"].AsInt32 > 0)
             {
-                if (Int16.Parse(grupo["plazasDisponibles"].ToString()) > 0)
-                {
-                    grupo["componentes"].AsBsonArray.Add(correo);
-                    break;
-                }
+                //He intentado declarar componentes como BsonArray
+                //Pero el método Add no funcionaba de ninguna manera
+                var componentes = grupos["componentes"].AsBsonArray;
+                componentes.Add(correo);
+                grupos = grupos.Set("componentes", componentes);
+                grupos = grupos.Set("plazasDisponibles", grupos["plazasDisponibles"].AsInt32 - 1);
             }
+            else throw new ReunionException("La reunion ha de tener plazas libres");
+            reunion = reunion.Set("grupos",grupos);
+            reunion = reunion.Set("_id", mongoId);
             _repositorio.UpdateReunion(mongoId,reunion);
+        }
+
+        // Supporting methods
+        //TODO
+        private string GetRol(string correo)
+        {
+            WebRequest request = WebRequest.Create("http://localhost:8083/api/usuarios/" + correo);
+            request.Method = "POST";
+            byte[] byteArray = Encoding.UTF8.GetBytes(correo);
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = byteArray.Length;
+            Stream dataStream = request.GetRequestStream();
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            dataStream.Close();
+
+            WebResponse response = request.GetResponse();
+            string responseFromServer;
+            using (dataStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(dataStream);
+                responseFromServer = reader.ReadToEnd();
+            }
+            response.Close();
+            return responseFromServer;
         }
     }
 }
