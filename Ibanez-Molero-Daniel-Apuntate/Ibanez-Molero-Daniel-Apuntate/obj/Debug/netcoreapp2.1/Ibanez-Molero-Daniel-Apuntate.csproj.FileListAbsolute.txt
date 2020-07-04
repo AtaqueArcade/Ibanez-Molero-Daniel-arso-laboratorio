@@ -1,0 +1,14 @@
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.deps.json
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.json
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.runtimeconfig.dev.json
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\bin\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.pdb
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.csprojAssemblyReference.cache
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.csproj.CoreCompileInputs.cache
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cache
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.RazorAssemblyInfo.cs
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfoInputs.cache
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.AssemblyInfo.cs
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.RazorTargetAssemblyInfo.cache
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.dll
+C:\Users\Dani\source\repos\Ibanez-Molero-Daniel-arso-laboratorio\Ibanez-Molero-Daniel-Apuntate\Ibanez-Molero-Daniel-Apuntate\obj\Debug\netcoreapp2.1\Ibanez-Molero-Daniel-Apuntate.pdb

@@ -1,11 +1,10 @@
-﻿using System.IO;
+using System.IO;
 using System.Net;
 using System.Text;
 using Ibanez_Molero_Daniel_Apuntate.Models;
 using Ibanez_Molero_Daniel_Apuntate.Repositories;
-using Microsoft.Ajax.Utilities;
 using MongoDB.Bson;
-//using RabbitMQ.Client;
+using System.Text;
 
 namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 {
@@ -60,12 +59,13 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public string GetReunion(string id)
         {
             ObjectId mongoId;
-            if (!id.IsNullOrWhiteSpace())
+            if ((id != null) && !id.Equals(""))
             {
                 if (!ObjectId.TryParse(id, out mongoId))
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
+
             return _repositorio.GetReunion(mongoId).ToJson();
         }
 
@@ -74,12 +74,13 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public void RemoveReunion(string id)
         {
             ObjectId mongoId;
-            if (!id.IsNullOrWhiteSpace())
+            if ((id != null) && !id.Equals(""))
             {
                 if (!ObjectId.TryParse(id, out mongoId))
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
+
             SendAQMPMessage("HOLA");
             _repositorio.RemoveReunion(mongoId);
         }
@@ -87,25 +88,25 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public void OcuparPlaza(string id, string correo)
         {
             ObjectId mongoId;
-            if (!id.IsNullOrWhiteSpace())
+            if ((id != null) && !id.Equals(""))
             {
                 if (!ObjectId.TryParse(id, out mongoId))
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
+
             //TODO (if correo != alumno...)
             var reunion = _repositorio.GetReunion(mongoId).AsBsonDocument;
             var grupos = reunion["grupos"].AsBsonDocument;
             if (grupos["plazasDisponibles"].AsInt32 > 0)
             {
-                //He intentado declarar componentes como BsonArray
-                //Pero el método Add no funcionaba de ninguna manera
                 var componentes = grupos["componentes"].AsBsonArray;
                 componentes.Add(correo);
                 grupos = grupos.Set("componentes", componentes);
                 grupos = grupos.Set("plazasDisponibles", grupos["plazasDisponibles"].AsInt32 - 1);
             }
             else throw new ReunionException("La reunion ha de tener plazas libres");
+
             reunion = reunion.Set("grupos", grupos);
             reunion = reunion.Set("_id", mongoId);
             _repositorio.UpdateReunion(mongoId, reunion);
@@ -131,6 +132,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 StreamReader reader = new StreamReader(dataStream);
                 responseFromServer = reader.ReadToEnd();
             }
+
             response.Close();
             return responseFromServer;
         }

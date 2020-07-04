@@ -1,31 +1,28 @@
-﻿using System.Web.Http;
-using Ibanez_Molero_Daniel_Apuntate.Models;
+﻿using Ibanez_Molero_Daniel_Apuntate.Models;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
 namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 {
-    public class RestController : ApiController
+    [Route("api/[controller]/reuniones")]
+    [ApiController]
+    public class RestController : ControllerBase
     {
-        private ReunionController _controller;
+        private ReunionController _controller = new ReunionController();
 
-        public RestController()
-        {
-            _controller = new ReunionController();
-        }
-
-        // POST: api/Rest/reuniones/
+        [HttpPost]
         public string CreateReunion([FromBody] Reunion reunion) => _controller.CreateReunion(reunion);
 
-        // GET: api/Rest/reuniones/{id}
-        public string GetReunion([FromUri] string id) => _controller.GetReunion(id).ToJson();
+        [HttpGet("{id}")]
+        public string GetReunion(string id) => _controller.GetReunion(id).ToJson();
 
-        // GET: api/Rest/reuniones/
+        [HttpGet]
         public string GetAllReuniones() => _controller.GetAllReuniones();
 
-        // DELETE: api/Rest/reuniones/{id}
-        public void Delete([FromUri]string id) => _controller.RemoveReunion(id);
+        [HttpDelete("{id}")]
+        public void Delete(string id) => _controller.RemoveReunion(id);
 
-        // POST: api/Rest/reuniones/{id}
-        public void JoinReunion([FromUri] string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id,correo.Direccion);
+        [HttpPost("{id}")]
+        public void JoinReunion(string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id,correo.Direccion);
     }
 }
