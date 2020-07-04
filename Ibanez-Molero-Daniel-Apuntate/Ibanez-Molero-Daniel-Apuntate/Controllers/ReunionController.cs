@@ -1,19 +1,18 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Text;
 using Ibanez_Molero_Daniel_Apuntate.Models;
 using Ibanez_Molero_Daniel_Apuntate.Repositories;
 using Microsoft.Ajax.Utilities;
 using MongoDB.Bson;
-using RabbitMQ.Client;
+//using RabbitMQ.Client;
 
 namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 {
     public class ReunionController
     {
         private RepositorioReuniones _repositorio;
-        private IModel channel;
+        //private IModel channel;
 
         public ReunionController()
         {
@@ -26,7 +25,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
         public string CreateReunion(Reunion r)
         {
-            if (r == null) 
+            if (r == null)
                 throw new ReunionException("La reunion no puede ser nula");
             if (r.Intervalos <= 0)
                 throw new ReunionException("El numero de alumnos por intervalo ha de ser mayor que cero");
@@ -107,9 +106,9 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 grupos = grupos.Set("plazasDisponibles", grupos["plazasDisponibles"].AsInt32 - 1);
             }
             else throw new ReunionException("La reunion ha de tener plazas libres");
-            reunion = reunion.Set("grupos",grupos);
+            reunion = reunion.Set("grupos", grupos);
             reunion = reunion.Set("_id", mongoId);
-            _repositorio.UpdateReunion(mongoId,reunion);
+            _repositorio.UpdateReunion(mongoId, reunion);
         }
 
         // Supporting methods
@@ -136,7 +135,8 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             return responseFromServer;
         }
 
-        private void SendAQMPMessage(string content){
+        private void SendAQMPMessage(string content)
+        {
             /*
             channel.QueueDeclare(queue: "ArSo",
             durable: false,

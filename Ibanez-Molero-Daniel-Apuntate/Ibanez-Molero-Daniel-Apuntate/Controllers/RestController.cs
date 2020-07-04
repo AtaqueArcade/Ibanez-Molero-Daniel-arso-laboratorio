@@ -26,6 +26,6 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public void Delete([FromUri]string id) => _controller.RemoveReunion(id);
 
         // POST: api/Rest/reuniones/{id}
-        public void JoinReunion([FromUri] string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id, correo.Direccion);
+        public void JoinReunion([FromUri] string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id,correo.Direccion);
     }
 }
