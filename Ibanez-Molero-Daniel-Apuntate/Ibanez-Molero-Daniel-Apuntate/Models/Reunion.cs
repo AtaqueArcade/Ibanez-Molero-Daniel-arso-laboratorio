@@ -6,9 +6,6 @@ namespace Ibanez_Molero_Daniel_Apuntate.Models
     [DataContract]
     public class Reunion
     {
-        [DataMember (Name = "id")]
-        public string Id { get; set; }
-
         [DataMember(Name = "titulo")]
         public string Titulo { get; set; }
 

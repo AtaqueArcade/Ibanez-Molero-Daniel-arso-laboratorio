@@ -1,25 +1,30 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
 using Ibanez_Molero_Daniel_Apuntate.Models;
 using Ibanez_Molero_Daniel_Apuntate.Repositories;
 using MongoDB.Bson;
-using System.Text;
+using Newtonsoft.Json.Linq;
+using RabbitMQ.Client;
 
 namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 {
     public class ReunionController
     {
         private RepositorioReuniones _repositorio;
-        //private IModel channel;
+        private IModel channel;
 
         public ReunionController()
         {
             _repositorio = new RepositorioReuniones();
-            /*
             var factory = new ConnectionFactory() { Uri = new Uri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy") };
             channel = factory.CreateConnection().CreateModel();
-            */
+            channel.QueueDeclare(queue: "ArSo",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
         }
 
         public string CreateReunion(Reunion r)
@@ -34,7 +39,15 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 throw new ReunionException("Las horas de inicio y fin han de ser coherentes");
             if (r.Cierre.CompareTo(r.Apertura) < 0)
                 throw new ReunionException("Las fechas de apertura y cierre han de ser coherentes");
-            //TODO if r.getOrganizador is profesor...
+            if (r.Organizador != null)
+            {
+                if (!GetRol(r.Organizador).Equals("profesor"))
+
+                    throw new ReunionException("El campo organizador ha de ser el correo de un profesor valido");
+
+            }
+            else throw new ReunionException("El campo organizador no puede ser nulo");
+
             var tiempoDeIntervalo = r.Fin.Subtract(r.Inicio).TotalMinutes / (r.Componentes / r.Intervalos);
             var componentes = new BsonArray();
             var grupos = new BsonDocument
@@ -44,7 +57,6 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 {"tiempoPorIntervalo", tiempoDeIntervalo},
                 {"componentes", componentes}
             };
-
             var reunion = new BsonDocument
             {
                 {"titulo", r.Titulo}, {"organizador", r.Organizador},
@@ -65,13 +77,12 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
-
             return _repositorio.GetReunion(mongoId).ToJson();
         }
 
         public string GetAllReuniones() => _repositorio.GetAll().ToJson();
 
-        public void RemoveReunion(string id)
+        public void RemoveReunion(string id, string correo)
         {
             ObjectId mongoId;
             if ((id != null) && !id.Equals(""))
@@ -80,8 +91,14 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
-
-            SendAQMPMessage("HOLA");
+            if (correo != null)
+            {
+                if (!GetRol(correo).Equals("profesor"))
+                    throw new ReunionException("El correo ha de pertenecer a un profesor valido");
+            }
+            else throw new ReunionException("El correo no puede ser nulo");
+            if (!_repositorio.GetReunion(mongoId)["organizador"].Equals(correo))
+                throw new ReunionException("El correo ha de pertenecer a el organizador de la reunion");
             _repositorio.RemoveReunion(mongoId);
         }
 
@@ -94,8 +111,12 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
-
-            //TODO (if correo != alumno...)
+            if (correo != null)
+            {
+                if (!GetRol(correo).Equals("estudiante"))
+                    throw new ReunionException("El correo ha de pertenecer a un estudiante valido");
+            }
+            else throw new ReunionException("El correo no puede ser nulo");
             var reunion = _repositorio.GetReunion(mongoId).AsBsonDocument;
             var grupos = reunion["grupos"].AsBsonDocument;
             if (grupos["plazasDisponibles"].AsInt32 > 0)
@@ -109,11 +130,22 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
             reunion = reunion.Set("grupos", grupos);
             reunion = reunion.Set("_id", mongoId);
+            SendAqmpMessage(reunion["organizador"] + ";" + correo + ";" + "REUNION" + ";" + reunion["ubicacion"] + ", " + reunion["ubicacion"] + ", " + reunion["inicio"] + "-" + reunion["fin"]);
             _repositorio.UpdateReunion(mongoId, reunion);
         }
 
         // Supporting methods
-        //TODO
+        private void SendAqmpMessage(string content)
+        {
+            string message = content;
+            var body = Encoding.UTF8.GetBytes(message);
+
+            channel.BasicPublish(exchange: "",
+                routingKey: "ArSo",
+                basicProperties: null,
+                body: body);
+        }
+
         private string GetRol(string correo)
         {
             WebRequest request = WebRequest.Create("http://localhost:8083/api/usuarios/" + correo);
@@ -129,31 +161,12 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             string responseFromServer;
             using (dataStream = response.GetResponseStream())
             {
-                StreamReader reader = new StreamReader(dataStream);
+                StreamReader reader = new StreamReader(dataStream ?? throw new ReunionException("No se ha podido establecer la conexión con la base de datos de usuarios"));
                 responseFromServer = reader.ReadToEnd();
             }
-
             response.Close();
-            return responseFromServer;
-        }
-
-        private void SendAQMPMessage(string content)
-        {
-            /*
-            channel.QueueDeclare(queue: "ArSo",
-            durable: false,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
-
-            string message = content;
-            var body = Encoding.UTF8.GetBytes(message);
-
-            channel.BasicPublish(exchange: "",
-            routingKey: "ArSo",
-            basicProperties: null,
-            body: body);
-            */
+            dynamic data = JObject.Parse(responseFromServer);
+            return data.rol.chars;
         }
     }
 }

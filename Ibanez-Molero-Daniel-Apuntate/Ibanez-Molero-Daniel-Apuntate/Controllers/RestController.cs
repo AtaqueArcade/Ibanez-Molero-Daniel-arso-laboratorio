@@ -20,7 +20,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         public string GetAllReuniones() => _controller.GetAllReuniones();
 
         [HttpDelete("{id}")]
-        public void Delete(string id) => _controller.RemoveReunion(id);
+        public void Delete(string id, [FromBody] Correo correo) => _controller.RemoveReunion(id,correo.Direccion);
 
         [HttpPost("{id}")]
         public void JoinReunion(string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id,correo.Direccion);
