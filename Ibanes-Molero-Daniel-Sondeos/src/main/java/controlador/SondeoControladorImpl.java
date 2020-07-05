@@ -26,7 +26,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 
 public class SondeoControladorImpl implements SondeoControlador {
-	public static final String RABBITURI = "amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy";
 	private static SondeoControlador controlador;
 	private SondeoRepository repositorio;
 	private Channel channel;
@@ -37,30 +36,33 @@ public class SondeoControladorImpl implements SondeoControlador {
 		if (controlador == null) {
 			try {
 				controlador = new SondeoControladorImpl();
-			} catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException | IOException
-					| TimeoutException e) {
+			} catch (SondeoException e) {
 				e.printStackTrace();
 			}
 		}
 		return controlador;
 	}
 
-	private SondeoControladorImpl()
-			throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException, IOException, TimeoutException {
+	private SondeoControladorImpl() throws SondeoException {
 		repositorio = SondeoRepository.getInstance();
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUri(RABBITURI);
-		Connection connection = factory.newConnection();
-		channel = connection.createChannel();
+		try {
+			factory.setUri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy");
+			Connection connection = factory.newConnection();
+			channel = connection.createChannel();
 
-		String queue = "sondeos";
-		boolean durable = false; // durable - RabbitMQ will never lose the queue if a crash occurs
-		boolean exclusive = false; // exclusive - if queue only will be used by one connection
-		boolean autoDelete = false; // autodelete - queue is deleted when last consumer unsubscribes
-		channel.queueDeclare(queue, durable, exclusive, autoDelete, null);
-		exchangeName = "";
-		routingKey = "sondeos";
+			String queue = "ArSo";
+			boolean durable = false;
+			boolean exclusive = false;
+			boolean autoDelete = false;
+			channel.queueDeclare(queue, durable, exclusive, autoDelete, null);
+			exchangeName = "";
+			routingKey = "sondeos";
+		} catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException | IOException
+				| TimeoutException e) {
+			throw new SondeoException("Error al establecer conexion con la cola de mensajes");
+		}
 	}
 
 	@Override
