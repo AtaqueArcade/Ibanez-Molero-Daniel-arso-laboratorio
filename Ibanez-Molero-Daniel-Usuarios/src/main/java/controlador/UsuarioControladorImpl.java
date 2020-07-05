@@ -33,6 +33,8 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	public JsonObject getUsuario(String correo) {
+		if (correo == null || correo.equals(""))
+			throw new IllegalArgumentException("El correo del usuario no puede ser nulo o vacio");
 		return repositorio.getUsuario(correo);
 	}
 
