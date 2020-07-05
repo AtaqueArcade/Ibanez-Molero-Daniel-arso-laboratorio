@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.um.es/sondeo" xmlns="http://www.um.es/sondeo"
+	elementFormDefault="qualified">
+	<xs:element name="TipoUsuario">
+		<xs:complexType>		
+			<xs:attribute name="correo" type="xs:string" use="required"/>
+			<xs:attribute name="nombre" type="xs:string" use="required" />
+			<xs:attribute name="rol" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="estudiante" />
+						<xs:enumeration value="profesor" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
