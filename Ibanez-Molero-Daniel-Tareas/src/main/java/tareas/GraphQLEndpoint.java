@@ -25,10 +25,10 @@ import graphql.servlet.SimpleGraphQLServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/graphql")
 public class GraphQLEndpoint extends SimpleGraphQLServlet {
-	public static final String RABBITURI = "amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy";
 	private static TareaRepository tareaRepository;
 	private static MongoClient client;
 
+	// Inicia el repositorio y el sistema de colas
 	private static void initDB()
 			throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException, IOException, TimeoutException {
 		MongoClient client = MongoClients.create(
@@ -37,14 +37,16 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
 		tareaRepository = new TareaRepository(database.getCollection("tareas"));
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUri(RABBITURI);
+		factory.setUri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-		String queue = "sondeos";
-		boolean durable = false; // durable - RabbitMQ will never lose the queue if a crash occurs
-		boolean exclusive = false; // exclusive - if queue only will be used by one connection
-		boolean autoDelete = false; // autodelete - queue is deleted when last consumer unsubscribes
+		String queue = "ArSo";
+		boolean durable = false;
+		boolean exclusive = false;
+		boolean autoDelete = false;
 		channel.queueDeclare(queue, durable, exclusive, autoDelete, null);
+		// Cada mensaje recibido (Tarea o Sondeo) creara una tarea en el sistema
+		// Las tareas pendientes de un alumno podran ser consultadas con TareasByUser
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			tareaRepository.saveTarea(parseTarea(new String(delivery.getBody(), "UTF-8")));
 		};
