@@ -3083,6 +3083,37 @@
           "lib/netstandard2.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {}
         }
       },
+      "Syncfusion.Licensing/18.1.0.59": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {}
+        }
+      },
+      "Syncfusion.Xamarin.Compression/18.1.0.59": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.Compression.Portable.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.Compression.Portable.dll": {}
+        }
+      },
+      "Syncfusion.Xamarin.XlsIO/18.1.0.59": {
+        "type": "package",
+        "dependencies": {
+          "Syncfusion.Licensing": "18.1.0.59",
+          "Syncfusion.Xamarin.Compression": "18.1.0.59"
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.XlsIO.Portable.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.XlsIO.Portable.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -8219,6 +8250,67 @@
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
     },
+    "Syncfusion.Licensing/18.1.0.59": {
+      "sha512": "2mil7zRAoq+Lkd7hdbooUeA9gNJxwUGajfVUVWO38FjirCtIy04LLCeepbM+DAC083JVFgG0eHyB9WLd2MwiqA==",
+      "type": "package",
+      "path": "syncfusion.licensing/18.1.0.59",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/MonoAndroid10/Syncfusion.Licensing.dll",
+        "lib/Xamarin.Mac/Syncfusion.Licensing.dll",
+        "lib/Xamarin.iOS10/Syncfusion.Licensing.dll",
+        "lib/net20/Syncfusion.Licensing.dll",
+        "lib/net35/Syncfusion.Licensing.dll",
+        "lib/net40/Syncfusion.Licensing.dll",
+        "lib/net45/Syncfusion.Licensing.dll",
+        "lib/net451/Syncfusion.Licensing.dll",
+        "lib/net46/Syncfusion.Licensing.dll",
+        "lib/netcoreapp3.0/Syncfusion.Licensing.dll",
+        "lib/netstandard1.0/Syncfusion.Licensing.dll",
+        "lib/netstandard1.2/Syncfusion.Licensing.dll",
+        "lib/netstandard1.4/Syncfusion.Licensing.dll",
+        "lib/netstandard2.0/Syncfusion.Licensing.dll",
+        "lib/portable-win+net45+wp80+win81+wpa81/Syncfusion.Licensing.dll",
+        "lib/uap10.0/Syncfusion.Licensing.dll",
+        "syncfusion.licensing.18.1.0.59.nupkg.sha512",
+        "syncfusion.licensing.nuspec"
+      ]
+    },
+    "Syncfusion.Xamarin.Compression/18.1.0.59": {
+      "sha512": "9aCBYYwdJoRDVT2b9E9F2uZMs2qjhmdpRhlIF8fDUHkCRUjM+EoVcCmjQgFN0ibRfop2ZyEis6TPl8K9+Ww9FQ==",
+      "type": "package",
+      "path": "syncfusion.xamarin.compression/18.1.0.59",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.4/Syncfusion.Compression.Portable.dll",
+        "lib/netstandard1.4/Syncfusion.Compression.Portable.xml",
+        "lib/netstandard2.0/Syncfusion.Compression.Portable.dll",
+        "lib/netstandard2.0/Syncfusion.Compression.Portable.xml",
+        "lib/portable-win+net45+wp80+win81+wpa81/Syncfusion.Compression.Portable.dll",
+        "lib/portable-win+net45+wp80+win81+wpa81/Syncfusion.Compression.Portable.xml",
+        "syncfusion.xamarin.compression.18.1.0.59.nupkg.sha512",
+        "syncfusion.xamarin.compression.nuspec"
+      ]
+    },
+    "Syncfusion.Xamarin.XlsIO/18.1.0.59": {
+      "sha512": "yWyZjceudDC2Exh1xXRdvT8LMWDM+Fi7SC+Y0ar+HOecPKeQZ6M+fCJQmkoFNhUR2UnPib2XBz5DLRxbHG4T+g==",
+      "type": "package",
+      "path": "syncfusion.xamarin.xlsio/18.1.0.59",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.4/Syncfusion.XlsIO.Portable.dll",
+        "lib/netstandard1.4/Syncfusion.XlsIO.Portable.xml",
+        "lib/netstandard2.0/Syncfusion.XlsIO.Portable.dll",
+        "lib/netstandard2.0/Syncfusion.XlsIO.Portable.xml",
+        "lib/portable-win+net45+wp80+win81+wpa81/Syncfusion.XlsIO.Portable.dll",
+        "lib/portable-win+net45+wp80+win81+wpa81/Syncfusion.XlsIO.Portable.xml",
+        "syncfusion.xamarin.xlsio.18.1.0.59.nupkg.sha512",
+        "syncfusion.xamarin.xlsio.nuspec"
+      ]
+    },
     "System.AppContext/4.3.0": {
       "sha512": "fKC+rmaLfeIzUhagxY17Q9siv/sPrjjKcfNg1Ic8IlQkZLipo8ljcaZQu4VtI4Jqbzjc2VTjzGLF6WmsRXAEgA==",
       "type": "package",
@@ -13096,7 +13188,8 @@
       "Microsoft.NETCore.App >= 2.1.0",
       "MongoDB.Driver >= 2.10.4",
       "RabbitMQ.Client >= 6.1.0",
-      "Swashbuckle.AspNetCore >= 5.5.1"
+      "Swashbuckle.AspNetCore >= 5.5.1",
+      "Syncfusion.Xamarin.XlsIO >= 18.1.0.59"
     ]
   },
   "packageFolders": {
@@ -13171,6 +13264,10 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[5.5.1, )"
+          },
+          "Syncfusion.Xamarin.XlsIO": {
+            "target": "Package",
+            "version": "[18.1.0.59, )"
           }
         },
         "imports": [

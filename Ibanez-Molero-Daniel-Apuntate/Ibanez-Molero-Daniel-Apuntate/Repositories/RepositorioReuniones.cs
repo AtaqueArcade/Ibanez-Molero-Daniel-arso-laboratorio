@@ -7,6 +7,9 @@ namespace Ibanez_Molero_Daniel_Apuntate.Repositories
     public class RepositorioReuniones
     {
         private IMongoCollection<BsonDocument> reuniones;
+        // La lista de espera ha de ser igual de persistente que las reuniones guardadas
+        // Si no que el sistema cayese implicaria la perdida de esta
+        private IMongoCollection<BsonDocument> listaEspera;
 
         public RepositorioReuniones()
         {
@@ -15,8 +18,10 @@ namespace Ibanez_Molero_Daniel_Apuntate.Repositories
                     "mongodb+srv://ataquearcade:huWAN4jGusPRjqV@arso-vaorn.mongodb.net/ArSo?retryWrites=true&w=majority");
             var database = client.GetDatabase("ArSo");
             reuniones = database.GetCollection<BsonDocument>("reuniones");
+            listaEspera = database.GetCollection<BsonDocument>("listaEspera");
         }
 
+        // reuniones
         public string SaveReunion(BsonDocument reunion)
         {
             reuniones.InsertOne(reunion);
@@ -37,7 +42,38 @@ namespace Ibanez_Molero_Daniel_Apuntate.Repositories
 
         public List<BsonDocument> GetAll() => reuniones.Find(f => true).ToList();
 
-        public void ResetReuniones() =>
-            reuniones.DeleteMany(f => true);
+        // lista de espera
+        public string SaveEspera(BsonDocument espera)
+        {
+            listaEspera.InsertOne(espera);
+            return espera["_id"].ToString();
+        }
+
+        public BsonDocument GetEspera(string reunion, int grupo)
+        {
+            var query = Builders<BsonDocument>.Filter.And(
+                Builders<BsonDocument>.Filter.Eq("reunion", reunion),
+                Builders<BsonDocument>.Filter.Eq("grupo", grupo)
+            );
+            return listaEspera.Find(query).FirstOrDefault();
+        }
+
+        public bool RemoveEspera(string correo, string reunion)
+        {
+            var query = Builders<BsonDocument>.Filter.And(
+                Builders<BsonDocument>.Filter.Eq("correo", correo),
+                Builders<BsonDocument>.Filter.Eq("reunion", reunion)
+            );
+            return listaEspera.DeleteMany(query).DeletedCount > 0;
+        }
+
+        public bool IsEspera(string correo, string reunion)
+        {
+            var query = Builders<BsonDocument>.Filter.And(
+                Builders<BsonDocument>.Filter.Eq("correo", correo),
+                Builders<BsonDocument>.Filter.Eq("reunion", reunion)
+            );
+            return listaEspera.Find(query).FirstOrDefault() != null;
+        }
     }
 }

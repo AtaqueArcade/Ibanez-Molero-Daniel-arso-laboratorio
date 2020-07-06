@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "f597b633ec78da7e2fa6ca3881aae0e433724a40"
+    "signature": "c2a7357cfd0f993a140e1b00ebd6ec47546da2ed"
   },
   "compilationOptions": {
     "defines": [
@@ -10,7 +10,7 @@
       "NETCOREAPP",
       "NETCOREAPP2_1"
     ],
-    "languageVersion": "",
+    "languageVersion": "7.1",
     "platform": "",
     "allowUnsafe": false,
     "warningsAsErrors": false,
@@ -30,7 +30,8 @@
           "Microsoft.NETCore.App": "2.1.0",
           "MongoDB.Driver": "2.10.4",
           "RabbitMQ.Client": "6.1.0",
-          "Swashbuckle.AspNetCore": "5.5.1"
+          "Swashbuckle.AspNetCore": "5.5.1",
+          "Syncfusion.Xamarin.XlsIO": "18.1.0.59"
         },
         "runtime": {
           "Ibanez-Molero-Daniel-Apuntate.dll": {}
@@ -531,6 +532,43 @@
         },
         "compile": {
           "lib/netstandard2.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {}
+        }
+      },
+      "Syncfusion.Licensing/18.1.0.59": {
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {
+            "assemblyVersion": "18.1.0.59",
+            "fileVersion": "18.1.0.59"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {}
+        }
+      },
+      "Syncfusion.Xamarin.Compression/18.1.0.59": {
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.Compression.Portable.dll": {
+            "assemblyVersion": "18.1451.0.59",
+            "fileVersion": "18.1451.0.59"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.Compression.Portable.dll": {}
+        }
+      },
+      "Syncfusion.Xamarin.XlsIO/18.1.0.59": {
+        "dependencies": {
+          "Syncfusion.Licensing": "18.1.0.59",
+          "Syncfusion.Xamarin.Compression": "18.1.0.59"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.XlsIO.Portable.dll": {
+            "assemblyVersion": "18.1451.0.59",
+            "fileVersion": "18.1451.0.59"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.XlsIO.Portable.dll": {}
         }
       },
       "System.ComponentModel/4.0.1": {
@@ -3932,6 +3970,27 @@
       "sha512": "sha512-a2Ym9DYrvTZ/Yt8GVfn6M1ZP++Ra3KAfCNe4pTtkNiHpBgWhsYWUT3T07REtFImduBh93GAHuItZpltSOZV13A==",
       "path": "swashbuckle.aspnetcore.swaggerui/5.5.1",
       "hashPath": "swashbuckle.aspnetcore.swaggerui.5.5.1.nupkg.sha512"
+    },
+    "Syncfusion.Licensing/18.1.0.59": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2mil7zRAoq+Lkd7hdbooUeA9gNJxwUGajfVUVWO38FjirCtIy04LLCeepbM+DAC083JVFgG0eHyB9WLd2MwiqA==",
+      "path": "syncfusion.licensing/18.1.0.59",
+      "hashPath": "syncfusion.licensing.18.1.0.59.nupkg.sha512"
+    },
+    "Syncfusion.Xamarin.Compression/18.1.0.59": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9aCBYYwdJoRDVT2b9E9F2uZMs2qjhmdpRhlIF8fDUHkCRUjM+EoVcCmjQgFN0ibRfop2ZyEis6TPl8K9+Ww9FQ==",
+      "path": "syncfusion.xamarin.compression/18.1.0.59",
+      "hashPath": "syncfusion.xamarin.compression.18.1.0.59.nupkg.sha512"
+    },
+    "Syncfusion.Xamarin.XlsIO/18.1.0.59": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yWyZjceudDC2Exh1xXRdvT8LMWDM+Fi7SC+Y0ar+HOecPKeQZ6M+fCJQmkoFNhUR2UnPib2XBz5DLRxbHG4T+g==",
+      "path": "syncfusion.xamarin.xlsio/18.1.0.59",
+      "hashPath": "syncfusion.xamarin.xlsio.18.1.0.59.nupkg.sha512"
     },
     "System.ComponentModel/4.0.1": {
       "type": "package",

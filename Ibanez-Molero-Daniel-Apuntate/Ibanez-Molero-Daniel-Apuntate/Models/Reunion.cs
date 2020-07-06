@@ -22,10 +22,10 @@ namespace Ibanez_Molero_Daniel_Apuntate.Models
         public string Descripcion { get; set; }
 
         [DataMember(Name = "inicio")]
-        public TimeSpan Inicio { get; set; }
+        public DateTime Inicio { get; set; }
 
         [DataMember(Name = "fin")]
-        public TimeSpan Fin { get; set; }
+        public DateTime Fin { get; set; }
 
         [DataMember(Name = "frecuencia")]
         public string Frecuencia { get; set; }

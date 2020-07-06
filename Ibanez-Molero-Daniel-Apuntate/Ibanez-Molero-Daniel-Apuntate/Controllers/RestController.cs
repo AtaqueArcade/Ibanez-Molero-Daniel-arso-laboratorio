@@ -1,4 +1,5 @@
-﻿using Ibanez_Molero_Daniel_Apuntate.Models;
+﻿using System.Net.Http;
+using Ibanez_Molero_Daniel_Apuntate.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
@@ -22,7 +23,13 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id, [FromBody] Correo correo) => _controller.RemoveReunion(id,correo.Direccion);
 
-        [HttpPost("{id}")]
-        public void JoinReunion(string id, [FromBody] Correo correo) => _controller.OcuparPlaza(id,correo.Direccion);
+        [HttpPost("{id}/join")]
+        public void JoinReunion(string id, [FromBody] Correo correo, int  grupo) => _controller.OcuparPlaza(id,correo.Direccion, grupo);
+
+        [HttpPost("{id}/remove")]
+        public void RemoveFromReunion(string id, [FromBody] Correo correo) => _controller.LiberarPlaza(id, correo.Direccion);
+
+        [HttpPost("export")]
+        public HttpResponseMessage ExportToExcel() => _controller.ExportReuniones();
     }
 }
