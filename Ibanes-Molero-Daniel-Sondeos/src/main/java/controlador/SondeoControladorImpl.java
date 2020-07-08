@@ -10,7 +10,9 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.stream.JsonParser;
 import org.bson.types.ObjectId;
@@ -130,16 +132,32 @@ public class SondeoControladorImpl implements SondeoControlador {
 	}
 
 	@Override
-	public boolean addEntrada(String id, String correo, String contenido) throws SondeoException {
+	public boolean addEntrada(String id, String correo, List<String> contenido) throws SondeoException {
 		if (!ObjectId.isValid(id))
 			throw new IllegalArgumentException("Formato de identificador incorrecto");
 		if (correo == null || getRol(correo) == null || !getRol(correo).equals("estudiante"))
 			throw new IllegalArgumentException("El usuario ha de ser el correo de un estudiante valido");
 		if (contenido == null || contenido.equals(""))
 			throw new IllegalArgumentException("El contenido no puede ser nulo o vacio");
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!Boolean
+				.parseBoolean(sondeo.get("final").toString().substring(1, sondeo.get("final").toString().length() - 1)))
+			throw new SondeoException("El sondeo esta pendiente de aprobacion por parte de " + sondeo.get("correo"));
+		if ((contenido.size() < sondeo.getInt("minSeleccion")) || (contenido.size() > sondeo.getInt("maxSeleccion")))
+			throw new SondeoException(
+					"El sondeo no permite esa cantidad de entradas [Formato de respuestas: 'R1,R2,R3']");
+		boolean hasAlreadyAnswered = false;
+		JsonArray arr = (JsonArray) repositorio.getEntradasSondeo(id).get("entradas");
+		for (int i = 0; i < arr.size(); i++) {
+			if (Pattern.matches("Document\\{\\{" + correo + ".*", arr.getString(i)))
+				hasAlreadyAnswered = true;
+		}
+		if (hasAlreadyAnswered)
+			throw new SondeoException("El correo ya ha respondido el sondeo indicado");
+
 		Entrada e = new Entrada();
 		e.setCorreo(correo);
-		e.setSeleccion(contenido);
+		e.setSeleccion(contenido.toString());
 
 		try {
 			String infoTarea = "SONDEO" + ";" + id + ";" + correo;

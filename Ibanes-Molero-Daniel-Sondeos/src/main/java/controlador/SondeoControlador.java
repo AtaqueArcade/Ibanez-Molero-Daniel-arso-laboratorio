@@ -18,7 +18,7 @@ public interface SondeoControlador {
 	void confirmSondeo(String id, String correo) throws SondeoException;
 
 	// Anade las respuestas emitidas por un alumno
-	boolean addEntrada(String id, String correo, String contenido) throws SondeoException;
+	boolean addEntrada(String id, String correo, List<String> contenido) throws SondeoException;
 
 	// Recupera un sondeo en base a su Id
 	public JsonObject getSondeo(String id);

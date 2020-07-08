@@ -49,7 +49,7 @@ public class SondeoRest {
 			@ApiParam(value = "Máximo de respuestas seleccionadas", required = true) @FormParam("maxSeleccion") int maxSeleccion,
 			@ApiParam(value = "Visibilidad del sondeo", required = true) @FormParam("visibilidad") String visibilidad)
 			throws SondeoException {
-		String id = controlador.createSondeo(correo, pregunta, petitionFix(respuestas), instrucciones, apertura, cierre,
+		String id = controlador.createSondeo(correo, pregunta, petitionParser(respuestas), instrucciones, apertura, cierre,
 				minSeleccion, maxSeleccion, visibilidad);
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 		builder.path(id);
@@ -77,7 +77,7 @@ public class SondeoRest {
 			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") List<String> respuesta,
 			@ApiParam(value = "Correo del creador del sondeo", required = true) @FormParam("correo") String correo)
 			throws SondeoException {
-		if (controlador.updateRespuestas(id, correo, petitionFix(respuesta)))
+		if (controlador.updateRespuestas(id, correo, petitionParser(respuesta)))
 			return Response.status(Response.Status.NO_CONTENT).build();
 		return Response.status(Response.Status.NOT_MODIFIED).build();
 	}
@@ -101,9 +101,9 @@ public class SondeoRest {
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
 	public Response responderSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
 			@ApiParam(value = "Correo del estudiante", required = true) @FormParam("correo") String correo,
-			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") String contenido)
+			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") List<String> contenido)
 			throws SondeoException {
-		if (controlador.addEntrada(id, correo, contenido))
+		if (controlador.addEntrada(id, correo, petitionParser(contenido)))
 			return Response.status(Response.Status.NO_CONTENT).build();
 		return Response.status(Response.Status.NOT_MODIFIED).build();
 	}
@@ -136,7 +136,7 @@ public class SondeoRest {
 	// Supporting methods
 	// Swagger envia las listas de strings como si fuera una sola variable
 	// El metodo vuelve a convertirlas en lista de ser necesario
-	private List<String> petitionFix(List<String> par) {
+	private List<String> petitionParser(List<String> par) {
 		if (par.size() == 1)
 			if (par.get(0).contains(","))
 				return Stream.of(par.get(0).split(",")).map(String::trim).collect(Collectors.toList());
