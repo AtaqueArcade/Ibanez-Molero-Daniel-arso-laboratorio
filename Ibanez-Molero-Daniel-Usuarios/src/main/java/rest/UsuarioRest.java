@@ -72,6 +72,8 @@ public class UsuarioRest {
 	public Response getRol(
 			@ApiParam(value = "Correo del usuario", required = true) @PathParam("correo") String correo) {
 		String rol = controlador.getRol(correo);
+		if (rol == null)
+			Response.status(Response.Status.BAD_REQUEST).build();
 		return Response.status(Response.Status.OK).entity(Json.createObjectBuilder().add("rol", rol).build()).build();
 	}
 

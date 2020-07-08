@@ -11,9 +11,12 @@ public class Mutation implements GraphQLRootResolver {
 		this.tareaRepository = tareaRepository;
 	}
 
-	public Tarea createTarea(String autor, List<String> receptores, String titulo, String contenido) {
-		Tarea tarea = new Tarea(autor, receptores, titulo, contenido);
+	public Tarea createTarea(String tipo, String tareaId, String autor, List<String> receptores, String fecha) {
+		Tarea tarea = new Tarea(tipo, tareaId, autor, receptores, fecha);
 		return tareaRepository.saveTarea(tarea);
+	}
 
+	public boolean deleteTarea(String id) {
+		return tareaRepository.removeTarea(id);
 	}
 }

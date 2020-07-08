@@ -10,7 +10,9 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.stream.JsonParser;
 import org.bson.types.ObjectId;
@@ -28,9 +30,9 @@ import com.rabbitmq.client.Channel;
 public class SondeoControladorImpl implements SondeoControlador {
 	private static SondeoControlador controlador;
 	private SondeoRepository repositorio;
-	private Channel channel;
+	private Channel channelPendientes;
+	private Channel channelCompletados;
 	private String exchangeName;
-	private String routingKey;
 
 	public static SondeoControlador getInstance() {
 		if (controlador == null) {
@@ -45,20 +47,18 @@ public class SondeoControladorImpl implements SondeoControlador {
 
 	private SondeoControladorImpl() throws SondeoException {
 		repositorio = SondeoRepository.getInstance();
-
 		ConnectionFactory factory = new ConnectionFactory();
 		try {
 			factory.setUri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy");
 			Connection connection = factory.newConnection();
-			channel = connection.createChannel();
-
-			String queue = "ArSo";
-			boolean durable = false;
+			boolean durable = true;
 			boolean exclusive = false;
 			boolean autoDelete = false;
-			channel.queueDeclare(queue, durable, exclusive, autoDelete, null);
+			channelPendientes = connection.createChannel();
+			channelCompletados = connection.createChannel();
+			channelPendientes.queueDeclare("ArSoPendientes", durable, exclusive, autoDelete, null);
+			channelCompletados.queueDeclare("ArSoCompletados", durable, exclusive, autoDelete, null);
 			exchangeName = "";
-			routingKey = "sondeos";
 		} catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException | IOException
 				| TimeoutException e) {
 			throw new SondeoException("Error al establecer conexion con la cola de mensajes");
@@ -66,11 +66,11 @@ public class SondeoControladorImpl implements SondeoControlador {
 	}
 
 	@Override
-	public String createSondeo(String usuario, String pregunta, List<String> respuestas, String instrucciones,
+	public String createSondeo(String correo, String pregunta, List<String> respuestas, String instrucciones,
 			String sApertura, String sCierre, int minSeleccion, int maxSeleccion, String visibilidad)
 			throws SondeoException {
-		if (usuario == null || !getRol(usuario).equals("profesor"))
-			throw new IllegalArgumentException("El usuario ha de ser el correo de un profesor valido");
+		if (correo == null || getRol(correo) == null || !getRol(correo).equals("profesor"))
+			throw new IllegalArgumentException("El correo ha de pertenecer a un profesor valido");
 		if (pregunta == null || pregunta.equals(""))
 			throw new IllegalArgumentException("La pregunta del sondeo no puede ser nula o vacia");
 		if (instrucciones == null || instrucciones.equals(""))
@@ -93,39 +93,79 @@ public class SondeoControladorImpl implements SondeoControlador {
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("Formato incorrecto de fecha y hora");
 		}
+
 		String id = null;
-		try {
-			id = repositorio.saveSondeo(usuario, pregunta, respuestas, instrucciones, apertura, cierre, maxSeleccion,
-					minSeleccion, visibilidad);
-			String infoTarea = usuario + ";" + getAllAlumnos() + ";" + "SONDEO" + ";" + pregunta;
-			channel.basicPublish(exchangeName, routingKey, null, infoTarea.getBytes());
-		} catch (IOException e) {
-			throw new SondeoException("No se ha podido realizar la conexión con la cola de mensajes");
-		}
+		id = repositorio.saveSondeo(correo, pregunta, respuestas, instrucciones, apertura, cierre, maxSeleccion,
+				minSeleccion, visibilidad);
 		return id;
 	}
 
 	@Override
-	public boolean updateRespuestas(String id, List<String> respuestas) {
+	public boolean updateRespuestas(String id, String correo, List<String> respuestas) throws SondeoException {
 		if (!ObjectId.isValid(id))
 			throw new IllegalArgumentException("Formato de identificador incorrecto");
 		if (respuestas == null || respuestas.size() < 1)
-			throw new IllegalArgumentException("Formato de respuestas incorrecto en edición");
+			throw new IllegalArgumentException("Formato de respuestas incorrecto en edicion");
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!correo.equals(sondeo.get("correo").toString().substring(1, sondeo.get("correo").toString().length() - 1)))
+			throw new SondeoException("El correo ha de pertenecer al creador del sondeo");
+		if (Boolean
+				.parseBoolean(sondeo.get("final").toString().substring(1, sondeo.get("final").toString().length() - 1)))
+			throw new SondeoException("El sondeo ha sido marcado como no editable");
 		return repositorio.updateRespuestas(id, respuestas);
 	}
 
 	@Override
-	public boolean addEntrada(String id, String correo, String contenido) throws SondeoException {
+	public void confirmSondeo(String id, String correo) throws SondeoException {
 		if (!ObjectId.isValid(id))
 			throw new IllegalArgumentException("Formato de identificador incorrecto");
-		if (correo == null || !getRol(correo).equals("estudiante"))
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!correo.equals(sondeo.get("correo").toString().substring(1, sondeo.get("correo").toString().length() - 1)))
+			throw new SondeoException("El correo ha de pertenecer al creador del sondeo");
+		try {
+			repositorio.makeFinal(id);
+			String infoTarea = "SONDEO" + ";" + id + ";" + correo + ";" + getAllAlumnos() + ";" + sondeo.get("cierre");
+			channelPendientes.basicPublish(exchangeName, "ArSoPendientes", null, infoTarea.getBytes());
+		} catch (IOException e) {
+			throw new SondeoException("No se ha podido realizar la conexión con la cola de mensajes");
+		}
+	}
+
+	@Override
+	public boolean addEntrada(String id, String correo, List<String> contenido) throws SondeoException {
+		if (!ObjectId.isValid(id))
+			throw new IllegalArgumentException("Formato de identificador incorrecto");
+		if (correo == null || getRol(correo) == null || !getRol(correo).equals("estudiante"))
 			throw new IllegalArgumentException("El usuario ha de ser el correo de un estudiante valido");
 		if (contenido == null || contenido.equals(""))
 			throw new IllegalArgumentException("El contenido no puede ser nulo o vacio");
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!Boolean
+				.parseBoolean(sondeo.get("final").toString().substring(1, sondeo.get("final").toString().length() - 1)))
+			throw new SondeoException("El sondeo esta pendiente de aprobacion por parte de " + sondeo.get("correo"));
+		if ((contenido.size() < sondeo.getInt("minSeleccion")) || (contenido.size() > sondeo.getInt("maxSeleccion")))
+			throw new SondeoException(
+					"El sondeo no permite esa cantidad de entradas [Formato de respuestas: 'R1,R2,R3']");
+		boolean hasAlreadyAnswered = false;
+		JsonArray arr = (JsonArray) repositorio.getEntradasSondeo(id).get("entradas");
+		for (int i = 0; i < arr.size(); i++) {
+			if (Pattern.matches("Document\\{\\{" + correo + ".*", arr.getString(i)))
+				hasAlreadyAnswered = true;
+		}
+		if (hasAlreadyAnswered)
+			throw new SondeoException("El correo ya ha respondido el sondeo indicado");
+
 		Entrada e = new Entrada();
 		e.setCorreo(correo);
-		e.setSeleccion(contenido);
-		return repositorio.addEntrada(id, e);
+		e.setSeleccion(contenido.toString());
+
+		try {
+			String infoTarea = "SONDEO" + ";" + id + ";" + correo;
+			channelCompletados.basicPublish(exchangeName, "ArSoCompletados", null, infoTarea.getBytes());
+			return repositorio.addEntrada(id, e);
+		} catch (IOException e1) {
+			throw new SondeoException("No se ha podido realizar la conexión con la cola de mensajes");
+		}
 	}
 
 	@Override
@@ -136,9 +176,22 @@ public class SondeoControladorImpl implements SondeoControlador {
 	}
 
 	@Override
-	public boolean removeSondeo(String id) {
+	public JsonObject getEntradas(String id, String correo) throws SondeoException {
 		if (!ObjectId.isValid(id))
 			throw new IllegalArgumentException("Formato de identificador incorrecto");
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!correo.equals(sondeo.get("correo").toString().substring(1, sondeo.get("correo").toString().length() - 1)))
+			throw new SondeoException("El correo ha de pertenecer al creador del sondeo");
+		return repositorio.getEntradasSondeo(id);
+	}
+
+	@Override
+	public boolean removeSondeo(String id, String correo) throws SondeoException {
+		if (!ObjectId.isValid(id))
+			throw new IllegalArgumentException("Formato de identificador incorrecto");
+		JsonObject sondeo = repositorio.getSondeo(id);
+		if (!correo.equals(sondeo.get("correo").toString().substring(1, sondeo.get("correo").toString().length() - 1)))
+			throw new SondeoException("El correo ha de pertenecer al creador del sondeo");
 		return repositorio.removeSondeo(id);
 	}
 
@@ -155,19 +208,19 @@ public class SondeoControladorImpl implements SondeoControlador {
 		InputStream inputStream = response.getEntityInputStream();
 		JsonParser parser = Json.createParser(inputStream);
 		while (parser.hasNext()) {
-			JsonParser.Event event = parser.next();
-			if (event == JsonParser.Event.KEY_NAME) {
-				String key = parser.getString();
-				event = parser.next();
-				if (key.equals("chars")) {
-					try {
+			try {
+				JsonParser.Event event = parser.next();
+				if (event == JsonParser.Event.KEY_NAME) {
+					String key = parser.getString();
+					event = parser.next();
+					if (key.equals("chars")) {
 						parser.close();
 						inputStream.close();
-					} catch (IOException e) {
-						throw new SondeoException("Error en el stream con el servidor de usuarios");
+						return parser.getString();
 					}
-					return parser.getString();
 				}
+			} catch (Exception e) {
+				throw new SondeoException("Error en la base de usuarios");
 			}
 		}
 		throw new SondeoException("Respuesta con formato incorrecto recibida del servidor de usuarios");

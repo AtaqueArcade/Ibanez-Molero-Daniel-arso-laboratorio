@@ -1,20 +1,50 @@
 package tareas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 public class TareaRepository {
 	private final MongoCollection<Document> tareas;
 
 	public TareaRepository(MongoCollection<Document> tareas) {
 		this.tareas = tareas;
+	}
+
+	public Tarea saveTarea(Tarea tarea) {
+		Document doc = new Document();
+		doc.append("tipo", tarea.getTipo());
+		doc.append("tareaId", tarea.getTareaId());
+		doc.append("autor", tarea.getAutor());
+		doc.append("fecha", tarea.getFecha());
+		tareas.insertOne(doc);
+		updateReceptores(doc.get("_id").toString(), tarea.getReceptores());
+		return tarea(doc);
+	}
+
+	public void updateReceptores(String id, List<String> receptores) {
+		// Si no quedan receptores de la tarea, esta se elimina del sistema
+		if (receptores.size() == 0) {
+			removeTarea(id);
+			return;
+		}
+		tareas.updateOne(Filters.eq("_id", new ObjectId(id)), Updates.set("receptores", new LinkedList<String>()));
+		for (String r : receptores) {
+			DBObject listItem = new BasicDBObject("receptores", r);
+			tareas.updateOne(Filters.eq("_id", new ObjectId(id)), new Document().append("$push", listItem));
+		}
+	}
+
+	public boolean removeTarea(String id) {
+		return tareas.deleteOne(Filters.eq("_id", new ObjectId(id))).getDeletedCount() > 0;
 	}
 
 	public List<Tarea> getAllTareas() {
@@ -25,11 +55,14 @@ public class TareaRepository {
 		return allTareas;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Tarea> getTareasReceptor(String receptor) {
 		List<Tarea> tareasReceptor = new ArrayList<>();
 		FindIterable<Document> doc = tareas.find();
 		for (Document docu : doc) {
-			if (parseStringToReceptores(docu.getString("receptores")).contains(receptor))
+			LinkedList<String> receptores = new LinkedList<String>();
+			((List<String>) docu.get("receptores")).forEach(r -> receptores.add(r));
+			if (receptores.contains(receptor))
 				tareasReceptor.add(tarea(docu));
 		}
 		return tareasReceptor;
@@ -44,43 +77,12 @@ public class TareaRepository {
 		return tareasAutor;
 	}
 
-	public Tarea findById(String id) {
-		Document doc = tareas.find(Filters.eq("_id", new ObjectId(id))).first();
-		return tarea(doc);
-	}
-
-	private Tarea tarea(Document doc) {
-		return new Tarea(doc.get("_id").toString(), doc.getString("autor"),
-				parseStringToReceptores(doc.getString("receptores")), doc.getString("titulo"),
-				doc.getString("contenido"));
-	}
-
-	public Tarea saveTarea(Tarea tarea) {
-		Document doc = new Document();
-		doc.append("autor", tarea.getAutor());
-		doc.append("receptores", parseReceptoresToString(tarea.getReceptores()));
-		doc.append("titulo", tarea.getTitulo());
-		doc.append("contenido", tarea.getContenido());
-		tareas.insertOne(doc);
-		return tarea(doc);
-
-	}
-
-	public void resetTareas() {
-		tareas.deleteMany(new Document());
-	}
-
 	// Supporting methods
-	private List<String> parseStringToReceptores(String rcpString) {
-		List<String> result = null;
-		if ((rcpString != null) && !rcpString.equals("")) {
-			result = Arrays.stream(rcpString.split("|")).map(String::intern).collect(Collectors.toList());
-		}
-		return result;
-	}
-
-	private String parseReceptoresToString(List<String> receptores) {
-		String result = String.join("|", receptores);
-		return result;
+	@SuppressWarnings("unchecked")
+	private Tarea tarea(Document doc) {
+		LinkedList<String> receptores = new LinkedList<String>();
+		((List<String>) doc.get("receptores")).forEach(r -> receptores.add(r));
+		return new Tarea(doc.get("_id").toString(), doc.getString("tipo"), doc.getString("tareaId"),
+				doc.getString("autor"), receptores, doc.getString("fecha"));
 	}
 }
