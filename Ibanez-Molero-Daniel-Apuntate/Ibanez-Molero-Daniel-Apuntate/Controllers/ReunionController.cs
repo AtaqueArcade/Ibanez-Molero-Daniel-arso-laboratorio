@@ -25,7 +25,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             _repositorio = new RepositorioReuniones();
             var factory = new ConnectionFactory() { Uri = new Uri("amqp://otbzkwgy:MUMAlBAj4iqa0y5ZX63cfDYX1hs7u00u@chinook.rmq.cloudamqp.com/otbzkwgy") };
             channel = factory.CreateConnection().CreateModel();
-            channel.QueueDeclare(queue: "ArSo",
+            channel.QueueDeclare(queue: "ArSoPendientes",
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -41,15 +41,13 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             if (r.Componentes <= 0)
                 throw new ReunionException("El numero de alumnos ha de ser mayor que cero");
             if (r.Fin.CompareTo(r.Inicio) < 0)
-                throw new ReunionException("Las horas de inicio y fin han de ser coherentes");
+                throw new ReunionException("Las fechas de inicio y fin han de ser coherentes");
             if (r.Cierre.CompareTo(r.Apertura) < 0)
                 throw new ReunionException("Las fechas de apertura y cierre han de ser coherentes");
             if (r.Organizador != null)
             {
                 if (!GetRol(r.Organizador).Equals("profesor"))
-
                     throw new ReunionException("El campo organizador ha de ser el correo de un profesor valido");
-
             }
             else throw new ReunionException("El campo organizador no puede ser nulo");
 
@@ -112,7 +110,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
-            
+
             if (correo != null)
             {
                 if (!GetRol(correo).Equals("profesor"))
@@ -120,7 +118,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             }
             else throw new ReunionException("El correo no puede ser nulo");
             if (!_repositorio.GetReunion(mongoId)["organizador"].Equals(correo))
-                throw new ReunionException("El correo ha de pertenecer a el organizador de la reunion");
+                throw new ReunionException("El correo ha de pertenecer al organizador de la reunion");
             _repositorio.RemoveReunion(mongoId);
         }
 
@@ -133,7 +131,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("Formato de Id incorrecto");
             }
             else throw new ReunionException("El id no puede ser nulo o vacio");
-            
+
             if (correo != null)
             {
                 if (!GetRol(correo).Equals("estudiante"))
@@ -141,14 +139,14 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             }
             else throw new ReunionException("El correo no puede ser nulo");
 
-            //Recupera los grupos de la reunion para comprobar si esta disponible la seleccion
+            // Recupera los grupos de la reunion para comprobar si esta disponible la seleccion
             BsonDocument reunion = _repositorio.GetReunion(mongoId).AsBsonDocument;
             BsonDocument grupos = reunion["grupos"].AsBsonDocument;
             BsonArray componentes = grupos["componentes"].AsBsonArray;
             bool usuarioIntroducido = false;
             BsonDocument grupoEnReunion = null;
 
-            //Comprobacion de que el usuario no se encuentra ya apuntado en la reunión
+            // Comprobacion de que el usuario no se encuentra ya apuntado en la reunión
             if (_repositorio.IsEspera(correo, id))
                 throw new ReunionException("El usuario ya ha sido apuntado previamente a esta reunion");
             foreach (var bsonValue in componentes)
@@ -158,7 +156,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     throw new ReunionException("El usuario ya ha sido apuntado previamente a esta reunion");
             }
 
-            //Busca la plaza libre
+            // Busca la plaza libre
             foreach (var bsonValue in componentes)
             {
                 grupoEnReunion = (BsonDocument)bsonValue;
@@ -169,17 +167,17 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     break;
                 }
             }
-            //Si el usuario se ha introducido con éxito, actualizar el grupo y crear la tarea para el usuario
+            // Si el usuario se ha introducido con éxito, actualizar el grupo y crear la tarea para el usuario
             if (usuarioIntroducido)
             {
                 grupos = grupos.Set("componentes", componentes);
                 grupos = grupos.Set("plazasDisponibles", grupos["plazasDisponibles"].AsInt32 - 1);
                 reunion = reunion.Set("grupos", grupos);
                 reunion = reunion.Set("_id", mongoId);
-                SendAqmpMessage(reunion["organizador"] + ";" + correo + ";" + "REUNION" + ";" + reunion["ubicacion"] + ", " + grupoEnReunion["hora"]);
+                SendAqmpMessage("REUNION" + ";" + id + ";" + reunion["organizador"] + ";" + correo + ";" + grupoEnReunion["hora"]);
                 _repositorio.UpdateReunion(mongoId, reunion);
             }
-            //En caso contrario, añadir en la lista de espera a consultar en caso de que alguien libere la plaza
+            // En caso contrario, añadir en la lista de espera a consultar en caso de que alguien libere la plaza
             else
             {
                 _repositorio.SaveEspera(new BsonDocument
@@ -206,7 +204,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
             }
             else throw new ReunionException("El correo no puede ser nulo");
 
-            //Si esta apuntado en lista de espera, solo se elimina de esta
+            // Si esta apuntado en lista de espera, solo se elimina de esta
             if (_repositorio.IsEspera(correo, id))
             {
                 _repositorio.RemoveEspera(correo, id);
@@ -227,7 +225,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                     {
                         grupoEnReunion.Set("correo", inEspera["correo"].ToString());
                         _repositorio.RemoveEspera(inEspera["correo"].ToString(), id);
-                        SendAqmpMessage(reunion["organizador"] + ";" + inEspera["correo"] + ";" + "REUNION" + ";" + reunion["ubicacion"] + ", " + grupoEnReunion["hora"]);
+                        SendAqmpMessage("REUNION" + ";" + id + ";" + reunion["organizador"] + ";" + inEspera["correo"] + ";" + grupoEnReunion["hora"]);
                     }
                     // Si no, se libera la plaza
                     else
@@ -247,7 +245,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
 
         public HttpResponseMessage ExportReuniones()
         {
-            //Genera una coleccion de reuniones
+            // Genera una coleccion de reuniones
             List<Reunion> reuniones = new List<Reunion>();
             foreach (var reunion in _repositorio.GetAll())
             {
@@ -265,7 +263,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 r.Tipo = reunion["tipo"].ToString();
                 reuniones.Add(r);
             }
-            //traduce la coleccion a una datatable
+            // Traduce la coleccion a una datatable
             DataTable dataTable = new DataTable(typeof(Reunion).Name);
             PropertyInfo[] props = typeof(Reunion).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo prop in props)
@@ -281,7 +279,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 }
                 dataTable.Rows.Add(values);
             }
-            //genera el documento Excel a partir de la datatable
+            // Genera el documento Excel a partir de la datatable
             var stream = new MemoryStream();
             using (ExcelEngine excelEngine = new ExcelEngine())
             {
@@ -293,7 +291,7 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
                 worksheet.UsedRange.AutofitColumns();
                 workbook.SaveAs(stream);
             }
-            //Introduce el documento en el cuerpo de la respuesta http
+            // Introduce el documento en el cuerpo de la respuesta http
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(stream.ToArray())
@@ -309,11 +307,9 @@ namespace Ibanez_Molero_Daniel_Apuntate.Controllers
         // Supporting methods
         private void SendAqmpMessage(string content)
         {
-            string message = content;
-            byte[] body = Encoding.UTF8.GetBytes(message);
-
+            byte[] body = Encoding.UTF8.GetBytes(content);
             channel.BasicPublish(exchange: "",
-                routingKey: "ArSo",
+                routingKey: "ArSoPendientes",
                 basicProperties: null,
                 body: body);
         }
