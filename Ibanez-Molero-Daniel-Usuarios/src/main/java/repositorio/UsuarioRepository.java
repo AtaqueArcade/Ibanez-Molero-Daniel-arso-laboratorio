@@ -42,6 +42,8 @@ public class UsuarioRepository {
 
 	public JsonObject getUsuario(String correo) {
 		Document doc = usuarios.find(Filters.eq("correo", correo)).first();
+		if (doc == null)
+			return null;
 		JsonObject usuario = Json.createObjectBuilder().add("correo", doc.getString("correo"))
 				.add("nombre", doc.getString("nombre")).add("rol", doc.getString("rol")).build();
 		return usuario;
