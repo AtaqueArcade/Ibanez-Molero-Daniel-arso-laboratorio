@@ -1,9 +1,10 @@
 type Tarea {
   id: ID!
+  tipo: String!
+  tareaId: String!
   autor: String!
   receptores: [String!]!
-  titulo: String!
-  contenido: String!
+  fecha: String!
 }
 
 type Query {
@@ -13,7 +14,8 @@ type Query {
 }
 
 type Mutation {
-  createTarea(autor: String!, receptores: [String!]!, titulo: String!, contenido: String!): Tarea
+  createTarea(tipo: String!, tareaId: String!,autor: String!,receptores: [String!]!, fecha: String!): Tarea
+  deleteTarea(id: String!): Boolean!
 }
 
 schema {
