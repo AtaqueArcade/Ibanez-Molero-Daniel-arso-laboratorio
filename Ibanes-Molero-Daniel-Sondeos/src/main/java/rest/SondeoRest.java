@@ -2,6 +2,9 @@ package rest;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
@@ -46,7 +49,7 @@ public class SondeoRest {
 			@ApiParam(value = "Máximo de respuestas seleccionadas", required = true) @FormParam("maxSeleccion") int maxSeleccion,
 			@ApiParam(value = "Visibilidad del sondeo", required = true) @FormParam("visibilidad") String visibilidad)
 			throws SondeoException {
-		String id = controlador.createSondeo(correo, pregunta, respuestas, instrucciones, apertura, cierre,
+		String id = controlador.createSondeo(correo, pregunta, petitionFix(respuestas), instrucciones, apertura, cierre,
 				minSeleccion, maxSeleccion, visibilidad);
 		UriBuilder builder = uriInfo.getAbsolutePathBuilder();
 		builder.path(id);
@@ -71,10 +74,24 @@ public class SondeoRest {
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
 	public Response updateSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
-			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") List<String> respuesta) {
-		if (controlador.updateRespuestas(id, respuesta))
+			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") List<String> respuesta,
+			@ApiParam(value = "Correo del creador del sondeo", required = true) @FormParam("correo") String correo)
+			throws SondeoException {
+		if (controlador.updateRespuestas(id, correo, petitionFix(respuesta)))
 			return Response.status(Response.Status.NO_CONTENT).build();
 		return Response.status(Response.Status.NOT_MODIFIED).build();
+	}
+
+	@POST
+	@Path("/{id}/confirm")
+	@ApiOperation(value = "Guardar sondeo", notes = "Confirma el sondeo en su estado actual y lo publica")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
+	public Response saveSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
+			@ApiParam(value = "Correo del creador del sondeo", required = true) @FormParam("correo") String correo)
+			throws SondeoException {
+		controlador.confirmSondeo(id, correo);
+		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	@POST
@@ -82,7 +99,7 @@ public class SondeoRest {
 	@ApiOperation(value = "Responder sondeo", notes = "Anade respuestas a un sondeo")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
-	public Response responder(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
+	public Response responderSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
 			@ApiParam(value = "Correo del estudiante", required = true) @FormParam("correo") String correo,
 			@ApiParam(value = "Respuestas al sondeo", required = true) @FormParam("respuestas") String contenido)
 			throws SondeoException {
@@ -91,14 +108,38 @@ public class SondeoRest {
 		return Response.status(Response.Status.NOT_MODIFIED).build();
 	}
 
+	@POST
+	@Path("/{id}/entradas")
+	@ApiOperation(value = "Recupera las entradas", notes = "Devuelve las respuestas de los alumnos al sondeo")
+	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
+			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
+	public Response entradasSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
+			@ApiParam(value = "Correo del profesor", required = true) @FormParam("correo") String correo)
+			throws SondeoException {
+		JsonObject sondeo = controlador.getEntradas(id, correo);
+		return Response.status(Response.Status.OK).entity(sondeo).build();
+	}
+
 	@DELETE
 	@Path("/{id}")
 	@ApiOperation(value = "Borrar sondeo", notes = "Elimina un sondeo de la base de datos")
 	@ApiResponses(value = { @ApiResponse(code = HttpServletResponse.SC_NO_CONTENT, message = ""),
 			@ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "El sondeo pedido no existe") })
-	public Response removeSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id) {
-		if (controlador.removeSondeo(id) == true)
+	public Response removeSondeo(@ApiParam(value = "Id del sondeo", required = true) @PathParam("id") String id,
+			@ApiParam(value = "Correo del profesor", required = true) @FormParam("correo") String correo)
+			throws SondeoException {
+		if (controlador.removeSondeo(id, correo) == true)
 			return Response.status(Response.Status.NO_CONTENT).build();
 		return Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+	// Supporting methods
+	// Swagger envia las listas de strings como si fuera una sola variable
+	// El metodo vuelve a convertirlas en lista de ser necesario
+	private List<String> petitionFix(List<String> par) {
+		if (par.size() == 1)
+			if (par.get(0).contains(","))
+				return Stream.of(par.get(0).split(",")).map(String::trim).collect(Collectors.toList());
+		return par;
 	}
 }
